@@ -4,6 +4,8 @@
 
 ## 关于Connect
 
+![IMG_20220827_212155](https://gitee.com/liuxiyuan_2022/flutter_test/raw/master/lib/assets/imgs/202208272125829.jpg)
+
 
 
 **[温馨提示]**
@@ -32,7 +34,7 @@ flutter pub get
 
 3. 将`lib\controller\services\speech_recognition_controller.dart` 的`setApikey()`的对应字符串替换为自己的API密钥 :
 
-   API密钥信息可以在 **AppGallery Connect**  的 **我的项目** 中找到.
+   你的ApiKey可以在 **agconnect-services.json**文件里找到, 或者进入 **AppGallery Connect** 查看.
 
 ```dart
 /// 设置APP的HMS ML apiKey
@@ -43,13 +45,15 @@ void setApiKey() {
 }
 ```
 
-4. 将你的一张面部照片复制到`assets\images\`目录下, 并重命名为`face_template.jpg` , 用以面部解锁. (建议使用 1 : 1的图片比例, 并确保面部清晰).
+4. 将你的一张面部照片复制到`assets\images\`目录下, 并重命名为`face_template.jpg` , 用以面部解锁. 
+
+   (建议使用 1 : 1的图片比例, 并确保面部清晰).
 
 5. 在项目目录下输入命令, 将项目打包为Android apk :
 
-   - 本项目没有对ios端进行适配, 有能力的同学可自行适配并打包为ios应用
+  - 本项目没有对ios端进行适配, 有能力的同学可自行适配并打包为ios应用
 
-   - APK文件位置: `build\app\outputs\flutter-apk\app-release.apk`
+  - APK文件位置: `build\app\outputs\flutter-apk\app-release.apk`
 
 ```
 flutter build apk

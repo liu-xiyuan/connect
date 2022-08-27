@@ -83,12 +83,12 @@ class AboutPage extends GetView<AboutController> {
                   title: 'Check for updates',
                 ),
                 inkBar(
-                  onTop: () => {},
+                  onTop: () => controller.openGithubHome(),
                   icon: FontAwesomeIcons.github,
                   title: 'GitHub',
                 ),
                 inkBar(
-                  onTop: () => {},
+                  onTop: () => controller.openHelp(),
                   icon: FontAwesomeIcons.solidCircleQuestion,
                   title: 'Help',
                 ),
