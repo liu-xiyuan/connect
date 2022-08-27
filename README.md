@@ -16,15 +16,54 @@
 
 ## 安装
 
+### Connect App
 
+1. 在项目目录下输入命令, 下载项目所需依赖 :
+
+```dart
+flutter pub get
+```
+
+2. 接入 HUAWEI HMS Core 服务 :
+
+  - [快速开始](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-Guides/prepare-dev-env-0000001052511642)
+  - [API参考](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-References/overview-0000001052975193?ha_source=hms1)
+  - [这是我接入HMS Core 遇到的问题, 或许能帮助到你.]()
+
+3. 将`lib\controller\services\speech_recognition_controller.dart` 的`setApikey()`的对应字符串替换为自己的API密钥 :
+
+   API密钥信息可以在 **AppGallery Connect**  的 **我的项目** 中找到.
+
+```dart
+/// 设置APP的HMS ML apiKey
+void setApiKey() {
+	MLLanguageApp().setApiKey(
+      '你的API密钥',
+    );
+}
+```
+
+4. 将你的一张面部照片复制到`assets\images\`目录下, 并重命名为`face_template.jpg` , 用以面部解锁. (建议使用 1 : 1的图片比例, 并确保面部清晰).
+
+5. 在项目目录下输入命令, 将项目打包为Android apk :
+
+   - 本项目没有对ios端进行适配, 有能力的同学可自行适配并打包为ios应用
+
+   - APK文件位置: `build\app\outputs\flutter-apk\app-release.apk`
+
+```
+flutter build apk
+```
+
+​	
+
+### Connect Server
 
 
 
 ## 帮助
 
 ### 常见问题
-
-------
 
 #### 1. 为什么手机端无法与电脑进行蓝牙配对?
 
@@ -46,15 +85,13 @@
 
 
 
-#### 4. 为什么App一切后台, TCP连接就断开
+#### 4. 为什么App切后台, TCP连接就断开
 
 在手机设置的电池管理中将App设为[允许后台高耗电]
 
 
 
 ### 手势操作
-
------
 
 #### 主页指示条
 
