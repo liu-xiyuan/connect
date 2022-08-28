@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/face_verification_controller.dart';
 import 'package:connect/controller/services/hide_camera_controller.dart';
@@ -9,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+    with GetSingleTickerProviderStateMixin, WidgetsBindingObserver {
   static HomeController get to => Get.find();
 
   /// 背景图片x轴偏移量
@@ -27,6 +29,25 @@ class HomeController extends GetxController
     super.onInit();
     initControllers();
     initAnimation();
+    WidgetsBinding.instance.addObserver(this); // 监听应用程序生命周期状态
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.resumed:
+        BluetoothController.to.initHidDevice();
+        log("App进入前台: $state");
+        break;
+      case AppLifecycleState.paused:
+        log("App进入后台: $state");
+        break;
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.detached:
+        break;
+    }
   }
 
   /// 初始化控制器
@@ -88,5 +109,6 @@ class HomeController extends GetxController
   void onClose() {
     super.onClose();
     imageController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
 }

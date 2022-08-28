@@ -69,7 +69,7 @@ class HomePage extends GetView<HomeController> {
           highlightElevation: 0,
           onPressed: () {
             Vibrate.feedback(FeedbackType.success);
-            BluetoothController.to.showMediaInterface();
+            BluetoothController.to.connect();
           },
           child: const FaIcon(
             FontAwesomeIcons.boltLightning,

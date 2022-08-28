@@ -64,7 +64,7 @@ class BluetoothController extends GetxController {
     }
   }
 
-  /// 通过蓝牙与电脑连接(使用之前需手动配对)
+  /// 通过蓝牙与电脑连接
   void connect() async {
     String macAddress = prefs.getString('mac') ?? "34:7D:F6:56:C1:5F";
 
@@ -124,15 +124,15 @@ class BluetoothController extends GetxController {
 
   void blueStatusCall(MethodCall call) {
     isConnected.value = call.arguments;
-    if (!isConnected.value) {
-      GetNotification.showSnackbar(
-        'Bluetooth disconnected',
-        'Check Mac address and Bluetooth devices',
-        tipsIcon: FontAwesomeIcons.bluetooth,
-        tipsIconColor: ColorPalette.red,
-        isCleanQueue: false,
-      );
-    }
+    // if (!isConnected.value) {
+    //   GetNotification.showSnackbar(
+    //     'Bluetooth disconnected',
+    //     'Check Mac address and Bluetooth devices',
+    //     tipsIcon: FontAwesomeIcons.bluetooth,
+    //     tipsIconColor: ColorPalette.red,
+    //     isCleanQueue: false,
+    //   );
+    // }
     log('蓝牙连接: ${isConnected.value}');
   }
 
