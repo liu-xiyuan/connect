@@ -43,6 +43,8 @@
 git clone https://github.com/liuxiyuan-2022/connect.git
 ```
 
+> 以下步骤需配置Flutter环境, 详细环境配置请参考[Flutter官方文档](https://docs.flutter.dev/get-started/install)
+
 
 
 ### 配置Connect App端
@@ -61,9 +63,10 @@ git clone https://github.com/liuxiyuan-2022/connect.git
   - [API参考](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-References/overview-0000001052975193?ha_source=hms1)
   - [这是我接入HMS Core 遇到的问题, 或许能帮助到你.](https://github.com/liuxiyuan-2022/connect/blob/main/Flutter%203.0%20%E9%9B%86%E6%88%90%20HMS%20ML%20%E5%9D%91%E7%82%B9.md)
 
-  
 
-3. 将`lib\controller\services\speech_recognition_controller.dart` 的`setApikey()`的对应字符串替换为自己的API密钥 :
+
+
+2. 将`lib\controller\services\speech_recognition_controller.dart` 的`setApikey()`的对应字符串替换为自己的API密钥 :
 
    > 你的ApiKey可以在 **agconnect-services.json**文件里找到, 或者进入 **AppGallery Connect** 查看.
 
@@ -76,15 +79,16 @@ git clone https://github.com/liuxiyuan-2022/connect.git
    }
    ```
 
-   
+
 
 4. 将你的一张面部照片复制到`assets\images\`目录下, 并重命名为`face_template.jpg` , 用以面部解锁. 
 
    > 建议使用 1 : 1的图片比例, 并确保面部清晰.
 
-   
 
-5. 在项目目录下输入命令, 将项目打包为Android apk :
+
+
+4. 在项目目录下输入命令, 将项目打包为Android apk :
 
   - 本项目没有对ios端进行适配, 有能力的同学可自行适配并打包为ios应用
 
@@ -148,9 +152,14 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 ### 常见问题
 
+> 请确保App正确设置 ip地址 和 mac地址 
+
+
+
 #### 1. 为什么手机端无法与电脑进行蓝牙配对?
 
-在手机端和电脑端，分别取消对应端的蓝牙配对。 然后重启App重新操作。
+- 在手机端和电脑端，分别取消对应端的蓝牙配对。 然后重启App等待自动配对。
+- 若App无法自动配对, 尝试保持App位于前台, 在电脑端手动搜索手机进行蓝牙配对.
 
 
 
@@ -181,8 +190,6 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 模拟Enter键
 
 > 双击指示条
-
-
 
 
 
@@ -234,9 +241,5 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 ## 更新日志
 
-**[1.1.0]**
-
-------
-
-[新增] 文本复制手势 
+[点击查看]()
 
