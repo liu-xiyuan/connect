@@ -73,9 +73,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
    ```dart
    /// 设置APP的HMS ML apiKey
    void setApiKey() {
-   	MLLanguageApp().setApiKey(
-         '你的API密钥',
-       );
+   	MLLanguageApp().setApiKey('你的API密钥');
    }
    ```
 
@@ -132,7 +130,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 	
 3. 将`connectServer.bat`文件复制到`C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp`目录下 : 
 
-  > 此步骤杀毒软件会阻止，选择允许，然后重启电脑即可.
+	> 此步骤杀毒软件会阻止，选择允许，然后重启电脑即可.
   
   
 
@@ -241,5 +239,5 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 ## 更新日志
 
-[点击查看]()
+[点击查看](https://github.com/liuxiyuan-2022/connect/blob/main/CHANGELOG.md)
 
