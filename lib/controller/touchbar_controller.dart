@@ -18,7 +18,8 @@ class TouchbarController extends GetxController {
     Vibrate.feedback(FeedbackType.success);
     TcpServiceController.to.sendData(
       TcpCommands.keyboardAction,
-      KeyboardAction.tapEnter,
+      KeyboardAction.pressKeys,
+      data: 'enter',
     );
   }
 
@@ -29,14 +30,14 @@ class TouchbarController extends GetxController {
     if (offset > 2) {
       TcpServiceController.to.sendData(
         TcpCommands.keyboardAction,
-        KeyboardAction.tapArrowKey,
-        data: 'right',
+        KeyboardAction.pressKeys,
+        data: 'arrow_right',
       );
     } else if (offset < -2) {
       TcpServiceController.to.sendData(
         TcpCommands.keyboardAction,
-        KeyboardAction.tapArrowKey,
-        data: 'left',
+        KeyboardAction.pressKeys,
+        data: 'arrow_left',
       );
     }
   }
@@ -48,14 +49,14 @@ class TouchbarController extends GetxController {
     if (offset > 0) {
       TcpServiceController.to.sendData(
         TcpCommands.keyboardAction,
-        KeyboardAction.tapArrowKey,
-        data: 'down',
+        KeyboardAction.pressKeys,
+        data: 'arrow_down',
       );
     } else if (offset < 0) {
       TcpServiceController.to.sendData(
         TcpCommands.keyboardAction,
-        KeyboardAction.tapArrowKey,
-        data: 'up',
+        KeyboardAction.pressKeys,
+        data: 'arrow_up',
       );
     }
     log(offset.toString());

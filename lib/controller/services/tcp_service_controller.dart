@@ -208,7 +208,7 @@ enum TcpCommands {
   /// 键盘操作
   keyboardAction,
 
-  /// 语音识别
+  /// 语音操作
   speechAction,
 
   /// 其他
@@ -220,20 +220,11 @@ enum TcpCommands {
 
 /// 键盘事件
 enum KeyboardAction {
-  /// 按下Enter键
-  tapEnter,
-
-  /// 按下方向键
-  tapArrowKey,
-
-  /// 显示桌面应用程序(win + Tab)
-  showProgramWindow,
-
-  /// 切换桌面
-  switchDesktop,
+  /// 按压组合键
+  pressKeys,
 
   /// 网站缩放
-  webpageZoom
+  webpageZoom,
 }
 
 /// 语音事件
@@ -255,13 +246,4 @@ enum OtherAction {
 
   /// 打开指定路径的应用
   openApplication,
-
-  /// 喜欢歌曲(网易云快捷键)
-  loveSong,
-
-  /// 打开歌词(网易云快捷键)
-  openLyrics,
-
-  /// 切换mini模式(网易云快捷键)
-  miniMode,
 }

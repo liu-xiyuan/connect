@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:connect/controller/home_controller.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
+import 'package:connect/controller/services/tcp_service_controller.dart';
 import 'package:connect/widgets/home_page_appbar.dart';
 import 'package:connect/widgets/touchbar.dart';
 import 'package:connect/widgets/touchpad.dart';
@@ -69,7 +70,11 @@ class HomePage extends GetView<HomeController> {
           highlightElevation: 0,
           onPressed: () {
             Vibrate.feedback(FeedbackType.success);
-            BluetoothController.to.connect();
+            TcpServiceController.to.sendData(
+              TcpCommands.keyboardAction,
+              KeyboardAction.pressKeys,
+              data: ']',
+            );
           },
           child: const FaIcon(
             FontAwesomeIcons.boltLightning,

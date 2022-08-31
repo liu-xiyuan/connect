@@ -70,7 +70,8 @@ class TouchpadController extends GetxController {
       // --显示所有程序窗口(win + tab)
       TcpServiceController.to.sendData(
         TcpCommands.keyboardAction,
-        KeyboardAction.showProgramWindow,
+        KeyboardAction.pressKeys,
+        data: 'win, tab',
       );
     } else if (scalePointerCount.value == 3 && scaleVerticalScale > 1.5) {
       /// 三指张开
@@ -99,16 +100,16 @@ class TouchpadController extends GetxController {
       // --切换为下一个桌面
       TcpServiceController.to.sendData(
         TcpCommands.keyboardAction,
-        KeyboardAction.switchDesktop,
-        data: 'right',
+        KeyboardAction.pressKeys,
+        data: 'win, ctrl, arrow_right',
       );
     } else if (longPressMoveOffestX < -120) {
       // 长按并向左轻扫
       // --切换为上一个桌面
       TcpServiceController.to.sendData(
         TcpCommands.keyboardAction,
-        KeyboardAction.switchDesktop,
-        data: 'left',
+        KeyboardAction.pressKeys,
+        data: 'win, ctrl, arrow_left',
       );
     } else if (longPressMoveOffestY > 120) {
       // 长按并向下轻扫

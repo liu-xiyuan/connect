@@ -18,12 +18,6 @@ def other_manager(client_socket, dataList: list):
         _check_lock_screen(client_socket)
     elif action == "OtherAction.copyText":
         _copy_text(client_socket)
-    elif action == 'OtherAction.loveSong':
-        _love_song()
-    elif action == 'OtherAction.openLyrics':
-        _open_lyrics()
-    elif action == 'OtherAction.miniMode':
-        _mini_mode()
     elif action == 'OtherAction.openApplication':
         _open_application(data)
 
@@ -53,19 +47,4 @@ def _copy_text(client_socket):
 # 打开指定路径的应用
 def _open_application(data: str):
     subprocess.Popen(data)
-
-
-# 喜欢歌曲(网易云快捷键)
-def _love_song():
-    k.press_keys([k.control_key, k.alt_key, 'l'])
-
-
-# 打开歌词(网易云快捷键)
-def _open_lyrics():
-    k.press_keys([k.control_key, k.alt_key, 'd'])
-
-
-# mini模式(网易云快捷键)
-def _mini_mode():
-    k.press_keys([k.control_key, k.shift_key, 'm'])
 

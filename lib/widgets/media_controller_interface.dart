@@ -245,9 +245,8 @@ class MediaInterface extends GetView<MediaController> {
                   child: basicButton(
                     () {
                       TcpServiceController.to.sendData(
-                        TcpCommands.otherAction,
-                        OtherAction.loveSong,
-                      );
+                          TcpCommands.keyboardAction, KeyboardAction.pressKeys,
+                          data: 'ctrl, alt, L');
                     },
                     FontAwesomeIcons.solidHeart,
                     backgroundColor: ColorUtil.hex('#e05163'),
@@ -262,8 +261,9 @@ class MediaInterface extends GetView<MediaController> {
                   child: basicButton(
                     () {
                       TcpServiceController.to.sendData(
-                        TcpCommands.otherAction,
-                        OtherAction.openLyrics,
+                        TcpCommands.keyboardAction,
+                        KeyboardAction.pressKeys,
+                        data: 'ctrl, alt, d',
                       );
                     },
                     FontAwesomeIcons.solidClosedCaptioning,
@@ -277,8 +277,9 @@ class MediaInterface extends GetView<MediaController> {
                   child: basicButton(
                     () {
                       TcpServiceController.to.sendData(
-                        TcpCommands.otherAction,
-                        OtherAction.miniMode,
+                        TcpCommands.keyboardAction,
+                        KeyboardAction.pressKeys,
+                        data: 'ctrl, shift, m',
                       );
                     },
                     FontAwesomeIcons.minimize,
