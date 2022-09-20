@@ -71,7 +71,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 2. 将`lib\controller\services\speech_recognition_controller.dart` 的`setApikey()`的对应字符串替换为自己的API密钥 :
 
    ```dart
-/// 设置APP的HMS ML apiKey
+	/// 设置APP的HMS ML apiKey
    void setApiKey() {
    	MLLanguageApp().setApiKey('你的API密钥');
    }
@@ -230,7 +230,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 
 
-
+null
 
 > 在空白区域内双指轻旋
 
