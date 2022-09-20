@@ -49,7 +49,9 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 ### 配置Connect App端
 
-1. 在项目目录下输入命令, 下载项目所需依赖 :
+> Flutter=3.0.4
+
+1. 在项目目录下执行命令, 安装项目所需依赖 :
 
    ```bash
    flutter pub get
@@ -57,7 +59,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 
 
-2. 接入 HUAWEI HMS Core 服务 :
+2. 接入HUAWEI HMS Core服务 :
 
   - [快速开始](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-Guides/prepare-dev-env-0000001052511642)
   - [API参考](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-References/overview-0000001052975193?ha_source=hms1)
@@ -68,49 +70,59 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 2. 将`lib\controller\services\speech_recognition_controller.dart` 的`setApikey()`的对应字符串替换为自己的API密钥 :
 
-   > 你的ApiKey可以在 **agconnect-services.json**文件里找到, 或者进入 **AppGallery Connect** 查看.
-
    ```dart
-   /// 设置APP的HMS ML apiKey
+/// 设置APP的HMS ML apiKey
    void setApiKey() {
    	MLLanguageApp().setApiKey('你的API密钥');
    }
    ```
-
-
-
-4. 将你的一张面部照片复制到`assets\images\`目录下, 并重命名为`face_template.jpg` , 用以面部解锁. 
+   
+   > 你的ApiKey可以在 **agconnect-services.json**文件里找到, 或者进入 **AppGallery Connect** 查看.
+   
+   
+   
+3. 将你的一张面部照片复制到`assets\images\`目录下, 并重命名为`face_template.jpg` , 用以面部解锁. 
 
    > 建议使用 1 : 1的图片比例, 并确保面部清晰.
 
 
 
 
-4. 在项目目录下输入命令, 将项目打包为Android apk :
-
-  - 本项目没有对ios端进行适配, 有能力的同学可自行适配并打包为ios应用
-
-  - APK文件位置: `build\app\outputs\flutter-apk\app-release.apk`
+4. 将项目打包为Android apk :
 
   ```bash
   flutter build apk
   ```
 
-​	
+  > 本项目没有对ios端进行适配, 有能力的同学可自行适配并打包为ios应用.
+  >
+  > APK文件位置: `build\app\outputs\flutter-apk\app-release.apk`
+
+  
 
 ### 配置Connect Server端
 
-1. 下载python所需第三方库
+> python=3.7
+
+1. 安装pyhook
+
+   - 访问[网址链接](https://www.lfd.uci.edu/~gohlke/pythonlibs/), 在搜索栏搜索`pyHook`, 下载对应文件`pyHook‑1.5.1‑cp37‑cp37m‑win_amd64.whl`并保存到本地.
+   - 运行`pip install D:\Download\pyHook-1.5.1-cp37-cp37m-win_amd64.whl(本地文件路径)`命令
+
+
+
+
+2. 安装其他python所需的第三方库
 
    ```bash
    pip install pyperclip
-   pip install pyHook‑1.5.1‑cp37‑cp37m‑win_amd64.whl	// 如果你使用Anaconda3配置环境则无需安装
-   pip install pykeyboard	// 需先安装pyHook
+   pip install win32 //如果使用Anaconda3则无需安装
+   pip install PyUserInput	// 需先安装pyHook和win32
    ```
 
 
 
-2. 用记事本打开`connect\connectServer`目录下的`connectServer.bat`文件.
+3. 用记事本打开`connect\connectServer`目录下的`connectServer.bat`文件.
 
    然后将`python D:\DeveloperTools\code\Flutter\connect\connectServer\main.py` 的路径修改为当前`main.py`所在的路径 : 
 
@@ -124,25 +136,17 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 	pause
 	```
 	
-	> 如果你使用Anaconda3配置Python环境, 则在`:begin`字段下行添加`CALL activate 环境名`
+	> 如果使用Anaconda3配置Python环境, 则在`:begin`字段下行添加`CALL activate 环境名`
 	
 	
 	
-3. 将`connectServer.bat`文件复制到`C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp`目录下 : 
+4. 将`connectServer.bat`文件复制到`C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp`目录下 : 
 
 	> 此步骤杀毒软件会阻止，选择允许，然后重启电脑即可.
   
   
 
-4. Connect Server服务可以在**任务管理器**的**启动**中找到: `connectServer.bat`
-
-
-
-## 使用
-
-
-
-
+5. Connect Server服务可以在**任务管理器**的**启动**中找到: `connectServer.bat`
 
 
 
@@ -150,7 +154,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 ### 常见问题
 
-> 请确保App正确设置 ip地址 和 mac地址 
+> 使用前请确保App正确设置 `IP Address` 和 `MAC Address`
 
 
 
@@ -163,9 +167,12 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 #### 2. 蓝牙配对成功但连接失败？
 
-部分国内手机厂商的机型不兼容蓝牙HID，请在使用App之前检查你的设备**是否兼容蓝牙HID协议**。
+- 部分国内手机厂商的机型不兼容蓝牙HID，请在使用App之前检查你的设备**是否兼容蓝牙HID协议**。
+- 检查电脑端和手机端是否支持蓝牙连接。
+- 检查App的`Settings`中的`MAC Address`是否正确。
+- 尝试分别删除蓝牙设备, 并重启应用进行蓝牙配对连接。
 
-推荐谷歌商店下载应用: [Bluetooth HID Profile Tester](https://play.google.com/store/apps/details?id=com.rdapps.bluetoothhidtester) 检测。
+> 推荐谷歌商店下载应用: [Bluetooth HID Profile Tester](https://play.google.com/store/apps/details?id=com.rdapps.bluetoothhidtester) 检测手机是否兼容蓝牙HID。
 
 
 
@@ -207,7 +214,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 打开多桌面切换页面
 
-> 在空白区域内, 双指捏合
+> 在空白区域内, 三指捏合
 
 
 
@@ -223,7 +230,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 
 
-?
+
 
 > 在空白区域内双指轻旋
 
