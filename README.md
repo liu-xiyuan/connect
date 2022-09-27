@@ -29,9 +29,9 @@
 
 **[温馨提示]**
 
-1. 手机端必须基于Android 9.0 及以上版本
-2. 电脑端和手机端需支持蓝牙连接
-3. App大部分功能实现基于蓝牙HID协议, 请检查手机是否适配蓝牙HID
+1. 手机端必须基于**Android 9.0 及以上版本**
+2. 电脑端和手机端需支持**蓝牙连接**
+3. App大部分功能实现基于**蓝牙HID协议**, 请检查手机是否适配蓝牙HID
 
 
 
@@ -63,40 +63,33 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
   - [快速开始](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-Guides/prepare-dev-env-0000001052511642)
   - [API参考](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-References/overview-0000001052975193?ha_source=hms1)
-  - [这是我接入HMS Core 遇到的问题, 或许能帮助到你.](https://github.com/liuxiyuan-2022/connect/blob/main/Flutter%203.0%20%E9%9B%86%E6%88%90%20HMS%20ML%20%E5%9D%91%E7%82%B9.md)
+  - [一些接入HMS Core 遇到的问题.](https://github.com/liuxiyuan-2022/connect/blob/main/Flutter%203.0%20%E9%9B%86%E6%88%90%20HMS%20ML%20%E5%9D%91%E7%82%B9.md)
 
 
 
 
-2. 将`lib\controller\services\speech_recognition_controller.dart` 的`setApikey()`的对应字符串替换为自己的API密钥 :
+3. 在`assets/`文件夹下新建`HMS_ApiKey.txt`, 并将`agconnect-services.json`中的`api_key` 的值复制到此文件中:
 
-   ```dart
-	/// 设置APP的HMS ML apiKey
-   void setApiKey() {
-   	MLLanguageApp().setApiKey('你的API密钥');
-   }
-   ```
-   
    > 你的ApiKey可以在 **agconnect-services.json**文件里找到, 或者进入 **AppGallery Connect** 查看.
+	
    
    
-   
-3. 将你的一张面部照片复制到`assets\images\`目录下, 并重命名为`face_template.jpg` , 用以面部解锁. 
+4. 将你的一张面部照片复制到`assets\images\`目录下, 并重命名为`face_template.jpg` , 用以面部解锁. 
 
    > 建议使用 1 : 1的图片比例, 并确保面部清晰.
 
 
 
 
-4. 将项目打包为Android apk :
+5. 将项目打包为Android apk :
 
-  ```bash
-  flutter build apk
-  ```
+   ```bash
+   flutter build apk
+   ```
 
-  > 本项目没有对ios端进行适配, 有能力的同学可自行适配并打包为ios应用.
-  >
-  > APK文件位置: `build\app\outputs\flutter-apk\app-release.apk`
+   > 本项目没有对ios端进行适配, 可自行适配并打包为ios应用.
+   >
+   > APK文件位置: `build\app\outputs\flutter-apk\app-release.apk`
 
   
 
@@ -107,7 +100,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 1. 安装pyhook
 
    - 访问[网址链接](https://www.lfd.uci.edu/~gohlke/pythonlibs/), 在搜索栏搜索`pyHook`, 下载对应文件`pyHook‑1.5.1‑cp37‑cp37m‑win_amd64.whl`并保存到本地.
-   - 运行`pip install D:\Download\pyHook-1.5.1-cp37-cp37m-win_amd64.whl(本地文件路径)`命令
+   - 在cmd中执行命令: `pip install D:\Download\pyHook-1.5.1-cp37-cp37m-win_amd64.whl(本地文件路径)`
 
 
 
@@ -129,7 +122,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 	```
 	@echo off
 	if "%1" == "h" goto begin
-	mshta vbscript:createobject("wscript.shell").run("""%~0"" h",0)			(window.close)&&exit
+	mshta vbscript:createobject("wscript.shell").run("""%~0"" h",0)	 (window.close)&&exit
 	:begin
 
 	python 当前main.py的路径
@@ -172,7 +165,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 - 检查App的`Settings`中的`MAC Address`是否正确。
 - 尝试分别删除蓝牙设备, 并重启应用进行蓝牙配对连接。
 
-> 推荐谷歌商店下载应用: [Bluetooth HID Profile Tester](https://play.google.com/store/apps/details?id=com.rdapps.bluetoothhidtester) 检测手机是否兼容蓝牙HID。
+> 推荐谷歌商店下载应用: [Bluetooth HID Profile Tester](https://play.google.com/store/apps/details?id=com.rdapps.bluetoothhidtester) 检测手机是否兼容蓝牙HID协议。
 
 
 
