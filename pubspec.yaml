@@ -86,6 +86,7 @@ flutter:
   assets:
       - assets/images/
       - assets/audios/
+      - assets/HMS_ApiKey.txt
       # - assets/images/img_home_bg.jpg
       # - assets/images/face_template.jpg
   #   - images/a_dot_burr.jpeg

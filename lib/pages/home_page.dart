@@ -70,10 +70,8 @@ class HomePage extends GetView<HomeController> {
           highlightElevation: 0,
           onPressed: () {
             Vibrate.feedback(FeedbackType.success);
-            TcpServiceController.to.sendData(
-              TcpCommands.keyboardAction,
-              KeyboardAction.pressKeys,
-              data: ']',
+            log(
+              'Connect:${BluetoothController.to.isConnected.value}',
             );
           },
           child: const FaIcon(

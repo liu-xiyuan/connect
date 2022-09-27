@@ -37,6 +37,7 @@ migrate_working_dir/
 /macos/
 /linux/
 /assets/images/face_template.jpg
+/assets/HMS_ApiKey.txt
 
 # Web related
 lib/generated_plugin_registrant.dart

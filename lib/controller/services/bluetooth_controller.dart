@@ -67,7 +67,6 @@ class BluetoothController extends GetxController {
   /// 通过蓝牙与电脑连接
   void connect() async {
     String macAddress = prefs.getString('mac') ?? "34:7D:F6:56:C1:5F";
-
     if (isHidDevice.value && !isConnected.value) {
       try {
         await _androidChannel.invokeMethod("connect", macAddress);

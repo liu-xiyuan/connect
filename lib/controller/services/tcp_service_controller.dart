@@ -63,6 +63,7 @@ class TcpServiceController extends GetxController {
         );
       }
       log('TCP连接超时:[$e]');
+      return;
     }
 
     /// 监听TCP连接状态

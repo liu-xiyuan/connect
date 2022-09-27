@@ -3,9 +3,11 @@ import 'package:connect/controller/services/permission_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
 import 'package:connect/widgets/speech_interface.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:get/get.dart';
 import 'package:huawei_ml_language/huawei_ml_language.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siri_wave/siri_wave.dart';
 
 /// 自动语音识别
@@ -18,9 +20,13 @@ class SpeechRecognitionController extends GetxController {
   /// 语音识别转换的文字
   final speechText = ''.obs;
 
+  String hmsApiKey = '';
+
   MLAsrRecognizer recognizer = MLAsrRecognizer();
 
   var recognizerStatus = SpeechRecognizerStatus.running.obs;
+
+  late SharedPreferences prefs;
 
   /// 命令模式列表
   List<String> commandModeList = [
@@ -32,18 +38,28 @@ class SpeechRecognitionController extends GetxController {
   var commandModeIndex = 0.obs;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
+    prefs = await SharedPreferences.getInstance();
     setApiKey();
     siriWaveControlle.setAmplitude(1);
     siriWaveControlle.setSpeed(.1);
   }
 
   /// 设置APP的HMS ML apiKey
-  void setApiKey() {
-    MLLanguageApp().setApiKey(
-      '',
-    );
+  void setApiKey() async {
+    hmsApiKey = prefs.getString('HMSApiKey') ?? '';
+
+    if (hmsApiKey == '') {
+      try {
+        hmsApiKey = await rootBundle.loadString('assets/HMS_ApiKey.txt');
+        prefs.setString('HMSApiKey', hmsApiKey);
+        log('Set HMS ApiKey: $hmsApiKey');
+      } catch (e) {
+        log('$e');
+      }
+    }
+    MLLanguageApp().setApiKey(hmsApiKey);
   }
 
   /// 开始语音识别
