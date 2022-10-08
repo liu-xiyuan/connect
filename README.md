@@ -61,9 +61,9 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 2. 接入HUAWEI HMS Core服务 :
 
-  - [快速开始](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-Guides/prepare-dev-env-0000001052511642)
-  - [API参考](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-References/overview-0000001052975193?ha_source=hms1)
-  - [一些接入HMS Core 遇到的问题.](https://github.com/liuxiyuan-2022/connect/blob/main/Flutter%203.0%20%E9%9B%86%E6%88%90%20HMS%20ML%20%E5%9D%91%E7%82%B9.md)
+   - [快速开始](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-Guides/prepare-dev-env-0000001052511642)
+   - [API参考](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-References/overview-0000001052975193?ha_source=hms1)
+   - [一些接入HMS Core 遇到的问题.](https://github.com/liuxiyuan-2022/connect/blob/main/Flutter%203.0%20%E9%9B%86%E6%88%90%20HMS%20ML%20%E5%9D%91%E7%82%B9.md)
 
 
 
@@ -229,7 +229,7 @@ null
 
 
 
-从电脑复制选中的文本至手机剪切板
+将电脑端光标选中的文本复制到手机端的剪切板
 
 > 在空白区域内双击
 
