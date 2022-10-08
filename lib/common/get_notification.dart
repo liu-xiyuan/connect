@@ -9,9 +9,6 @@ import 'package:get/get.dart';
 class GetNotification {
   /// 关闭bottomSheet
   static void closeBottomSheet() {
-    if (Get.isSnackbarOpen) {
-      Get.closeAllSnackbars();
-    }
     if (Get.isBottomSheetOpen ?? false) {
       Get.back();
     }

@@ -13,6 +13,8 @@ class AppRouter {
 
   static Curve curves = Curves.easeOut;
 
+  static List<String> routesName = ['/', '/settings', '/about', '/gamepad'];
+
   static List<GetPage> routes = [
     GetPage(
       name: '/',
@@ -50,7 +52,7 @@ class AppRouter {
 
     if (routing.current == '/') {
       HomeController.to.homePageOffestX.value = 0;
-    } else {
+    } else if (routesName.contains(routing.current)) {
       HomeController.to.homePageOffestX.value = -(0.15);
     }
   }

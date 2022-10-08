@@ -133,7 +133,7 @@ class TcpServiceController extends GetxController {
       } else if (data == 'No lock screen') {
         FaceVerificationController.to.isLockScreen = false;
       } else if (data.startsWith('copyText:')) {
-        String text = data.split(':')[1];
+        String text = data.split('copyText:')[1];
         Clipboard.setData(ClipboardData(text: text));
         GetNotification.showSnackbar(
           'Text Copy',
