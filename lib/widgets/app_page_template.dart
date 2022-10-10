@@ -1,3 +1,4 @@
+import 'package:connect/style/color_palette.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -9,15 +10,15 @@ class AppPageTemplate extends StatelessWidget {
     Key? key,
     this.appBarTitle = "",
     this.appBarActions = const [],
-    this.subPageTitle = const SizedBox(),
-    this.pageTitle = "",
+    this.subPageTitle,
+    this.pageTitle,
     required this.child,
     this.flootTitle,
   }) : super(key: key);
   final String appBarTitle;
   final List<Widget> appBarActions;
-  final String pageTitle;
-  final Widget subPageTitle;
+  final String? pageTitle;
+  final String? subPageTitle;
   final Widget child;
   final String? flootTitle;
 
@@ -38,21 +39,29 @@ class AppPageTemplate extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            pageTitle == ''
+            // 页面标题
+            pageTitle == null
                 ? const SizedBox()
                 : Text(
-                    pageTitle.tr,
+                    pageTitle!,
                     style: const TextStyle(
                       fontSize: 30,
                       height: 1.1,
                       color: Colors.black,
                     ),
                   ).marginSymmetric(vertical: 10),
-            // SizedBox.expand(
-            //   child: child.marginOnly(top: 15),
-            // ),
+            //页面副标题
+            subPageTitle == null
+                ? const SizedBox()
+                : Text(
+                    subPageTitle!,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: ColorPalette.grey,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14,
+                        ),
+                  ).marginOnly(bottom: 20),
             Expanded(child: child.marginOnly(top: 15)),
-            // const Expanded(child: SizedBox(height: double.infinity)),
             Align(
               alignment: Alignment.center,
               child: Text(

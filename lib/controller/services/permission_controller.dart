@@ -21,8 +21,8 @@ class PermissionController extends GetxController {
       return true;
     } else {
       GetNotification.showSnackbar(
-        "Face Unlock Failed",
-        "Missing Permissions !",
+        "Missing Permissions ",
+        "Please allow relevant permissions!",
         tipsIcon: FontAwesomeIcons.circleExclamation,
         tipsIconColor: ColorPalette.red,
       );
@@ -38,8 +38,8 @@ class PermissionController extends GetxController {
       return true;
     } else {
       GetNotification.showSnackbar(
-        "Speech recognition Failed",
-        "Missing Recording permission!",
+        "Missing Recording permission",
+        "Please allow relevant permissions!",
         tipsIcon: FontAwesomeIcons.circleExclamation,
         tipsIconColor: ColorPalette.red,
       );

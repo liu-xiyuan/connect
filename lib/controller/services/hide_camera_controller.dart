@@ -23,18 +23,14 @@ class HideCameraController extends GetxController {
   /// 检测到面部的指示器
   RxInt debounceCount = 0.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    initCameraEngine();
-  }
-
   /// 初始化相机
-  Future<void> initCameraEngine() async {
+  Future<void> initCameraEngine(
+      {required BodyTransaction bodyTransaction,
+      required void Function({dynamic result}) onTransaction}) async {
     // 创建一个镜头控制器。
     final controller = MLBodyLensController(
       // 设置类型
-      transaction: BodyTransaction.skeleton, // face识别bug, 用skeleton(骨架)代替
+      transaction: bodyTransaction, // face识别bug, 用skeleton(骨架)代替
       // 将镜头设置为正面
       lensType: MLBodyLensController.frontLens,
     );
@@ -42,18 +38,10 @@ class HideCameraController extends GetxController {
     // 创建一个镜头引擎对象并指定控制器。
     cameraEngine = MLBodyLensEngine(controller: controller);
 
-    // 为了获得实时的识别结果，创建一个监听器回调。
-    void onTransaction({dynamic result}) {
-      // 判断相机返回结果是否识别到面部
-      if (result.toString() == "[Instance of 'MLSkeleton']") {
-        debounceCount++;
-      }
-    }
-
     // 然后将回调传递给引擎的setTransactor方法。
     cameraEngine.setTransactor(onTransaction);
 
-    // 初始化相机流的纹理。
+    // 初始化相机流的ID值。
     await cameraEngine.init().then((value) {
       // 将textureId变量设置为返回值。
       // 然后，纹理将准备好流。
@@ -61,9 +49,17 @@ class HideCameraController extends GetxController {
     });
   }
 
-  /// 启动相机
+  /// 启动相机 -人脸解锁
   Future<void> openCamera() async {
-    await initCameraEngine();
+    await initCameraEngine(
+      bodyTransaction: BodyTransaction.skeleton, // face识别bug, 用skeleton(骨架)代替
+      onTransaction: ({dynamic result}) {
+        // 判断相机返回结果是否识别到面部
+        if (result.toString() == "[Instance of 'MLSkeleton']") {
+          debounceCount++;
+        }
+      },
+    );
 
     cameraEngine.run();
     debounceCount.value = 0; // 将指示器的值清零

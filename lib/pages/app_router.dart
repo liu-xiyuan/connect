@@ -1,9 +1,11 @@
 import 'package:connect/controller/home_controller.dart';
 import 'package:connect/pages/about_page.dart';
+import 'package:connect/pages/facial_expression_page.dart';
 import 'package:connect/pages/gamepad_page.dart';
 import 'package:connect/pages/home_page.dart';
+import 'package:connect/pages/lab_page.dart';
 import 'package:connect/pages/settings_page.dart';
-import 'package:flutter/animation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AppRouter {
@@ -13,46 +15,37 @@ class AppRouter {
 
   static Curve curves = Curves.easeOut;
 
-  static List<String> routesName = ['/', '/settings', '/about', '/gamepad'];
+  static Map<String, dynamic> routesInfo = {
+    '/': const HomePage(),
+    '/settings': const SettingsPage(),
+    '/about': const AboutPage(),
+    '/gamepad': const GamepadPage(),
+    '/lab': const LabPage(),
+    '/expression': const FacialExpressionPage(),
+  };
 
-  static List<GetPage> routes = [
-    GetPage(
-      name: '/',
-      page: () => const HomePage(),
-      transitionDuration: duration,
-      transition: transition,
-      curve: curves,
-    ),
-    GetPage(
-      name: '/settings',
-      page: () => const SettingsPage(),
-      transitionDuration: duration,
-      transition: transition,
-      curve: curves,
-    ),
-    GetPage(
-      name: '/about',
-      page: () => const AboutPage(),
-      transitionDuration: duration,
-      transition: transition,
-      curve: curves,
-    ),
-    GetPage(
-      name: '/gamepad',
-      page: () => const GamepadPage(),
-      transitionDuration: duration,
-      transition: transition,
-      curve: curves,
-    )
-  ];
+  static List<GetPage> getRoutes() {
+    List<GetPage> routes = [];
+    routesInfo.forEach((key, value) {
+      routes.add(
+        GetPage(
+          name: key,
+          page: () => value,
+          transitionDuration: duration,
+          transition: transition,
+          curve: curves,
+        ),
+      );
+    });
+    return routes;
+  }
 
-  /// 监听页面跳转事件。
   static routingCallback(Routing routing) {
     Get.put(HomeController());
 
-    if (routing.current == '/') {
+    if (routing.current == '/' || routing.isBottomSheet!) {
       HomeController.to.homePageOffestX.value = 0;
-    } else if (routesName.contains(routing.current)) {
+    } else if (routesInfo.containsKey(routing.current)) {
       HomeController.to.homePageOffestX.value = -(0.15);
     }
   }

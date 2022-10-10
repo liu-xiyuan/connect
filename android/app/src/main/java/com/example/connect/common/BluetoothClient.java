@@ -114,8 +114,8 @@ public class BluetoothClient extends BluetoothHidDevice.Callback {
     -------------------------------------
     */
 
-    // 键盘按键按压
-    public void sendKeyWithRelease(String key) {
+    // 判断是否按下shift输入大写字母
+    public byte capsKey(String key){
         byte b1 = 0;
         if (key.length() <= 1) {
             char keyChar = key.charAt(0);
@@ -127,10 +127,25 @@ public class BluetoothClient extends BluetoothHidDevice.Callback {
         if (BluetoothKeyboard.SHITBYTE.containsKey(key)) {
             b1 = 2;
         }
+        return b1;
+    }
 
-        sendData(8, new byte[]{b1, 0, BluetoothKeyboard.KEY2BYTE.get(key.toUpperCase())});  // 按下对应键
+    // 键盘按键按压
+    public void sendKeyWithRelease(String key) {
+        sendData(8, new byte[]{capsKey(key), 0, BluetoothKeyboard.KEY2BYTE.get(key.toUpperCase())});  // 按下对应键
         sendData(8, new byte[]{0, 0, 0});   // 松开对应键
     }
+
+    // 键盘按下对应键
+    public void sendKey(String key) {
+        sendData(8, new byte[]{capsKey(key), 0, BluetoothKeyboard.KEY2BYTE.get(key.toUpperCase())});  // 按下对应键
+    }
+
+    // 松开对应键
+    public void sendKeyRelease() {
+        sendData(8, new byte[]{0, 0, 0});   // 松开对应键
+    }
+
 
     /*
     -------------------------------------

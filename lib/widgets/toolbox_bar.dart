@@ -73,13 +73,14 @@ class ToolboxBar extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // 蓝牙手柄
+            // 实验室
             ToolboxBarItem(
               onTap: () {
                 GetNotification.closeBottomSheet();
+                Get.toNamed('/lab');
               },
-              title: 'Gamepad',
-              icon: FontAwesomeIcons.gamepad,
+              title: 'Laboratory',
+              icon: FontAwesomeIcons.flask,
               iconColor: ColorUtil.hex("#797dff"),
             ),
 

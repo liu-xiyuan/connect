@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      getPages: AppRouter.routes,
+      getPages: AppRouter.getRoutes(),
       theme: AppThemeStyle.appTheme,
       routingCallback: (routing) => AppRouter.routingCallback(routing!),
       home: const HomePage(),

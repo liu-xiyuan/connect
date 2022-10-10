@@ -95,7 +95,21 @@ class BluetoothController extends GetxController {
   /// [.sendKeyWithRelease("a")]
   Future sendKeyWithRelease(String key) async {
     if (checkBluetooth()) {
+      await _androidChannel.invokeMethod("sendKeyWithRelease", key);
+    }
+  }
+
+  /// 按下对应键
+  Future sendKey(String key) async {
+    if (checkBluetooth()) {
       await _androidChannel.invokeMethod("sendKey", key);
+    }
+  }
+
+  /// 松开对应键
+  Future sendKeyRelease() async {
+    if (checkBluetooth()) {
+      await _androidChannel.invokeMethod("sendKeyRelease");
     }
   }
 

@@ -37,8 +37,16 @@ public class MainActivity extends FlutterActivity {
                                     bluetoothClient.connect((String) call.arguments);
                                     break;
 
-                                case "sendKey":
+                                case "sendKeyWithRelease":
                                     bluetoothClient.sendKeyWithRelease((String) call.arguments);
+                                    break;
+
+                                case "sendKey":
+                                    bluetoothClient.sendKey((String) call.arguments);
+                                    break;
+
+                                case "sendKeyRelease":
+                                    bluetoothClient.sendKeyRelease();
                                     break;
 
                                 case "mediaControl":
