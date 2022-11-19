@@ -1,6 +1,4 @@
-import 'dart:developer';
-
-import 'package:connect/controller/services/facial_expression_controller.dart';
+import 'package:connect/controller/lab/facial_expression_controller.dart';
 import 'package:connect/controller/services/hide_camera_controller.dart';
 import 'package:connect/style/color_palette.dart';
 import 'package:connect/widgets/app_page_template.dart';
@@ -15,7 +13,6 @@ class FacialExpressionPage extends GetView<FacialExpressionController> {
   @override
   Widget build(BuildContext context) {
     Get.put(FacialExpressionController());
-    log((context.width - 50).toString());
     return AppPageTemplate(
       pageTitle: 'Smile to Shot!',
       subPageTitle: 'To play games with a smile.',

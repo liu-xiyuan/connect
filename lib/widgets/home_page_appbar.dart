@@ -1,4 +1,5 @@
 import 'package:connect/controller/home_controller.dart';
+import 'package:connect/controller/lab/shutdown_controller.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
 import 'package:connect/style/color_palette.dart';
@@ -48,13 +49,21 @@ class HomePageAppbar extends GetView<HomeController> {
                     size: 8,
                   ).marginOnly(right: 5),
                 ),
-                // StatusTag(
-                //   onTap: () {
-                //     GetNotification.showToast(message: 'Already in Touch Mode');
-                //   },
-                //   tagTitle: "Touch Mode",
-                //   backgroundColor: ColorPalette.green.withOpacity(.1),
-                // ),
+                Visibility(
+                  visible: ShutdownController.to.isTiming.value,
+                  child: StatusTag(
+                    tagTitle:
+                        "${ShutdownController.to.shutdownData.value.hour.toString().padLeft(2, '0')} : ${ShutdownController.to.shutdownData.value.minute.toString().padLeft(2, '0')}",
+                    onTap: () {
+                      ShutdownController.to.cancelShutdown();
+                    },
+                    leading: const FaIcon(
+                      FontAwesomeIcons.clockRotateLeft,
+                      size: 8,
+                    ).marginOnly(right: 5),
+                    backgroundColor: ColorPalette.green.withOpacity(.1),
+                  ),
+                ),
               ],
             ),
           ),
@@ -160,6 +169,7 @@ class StatusTag extends StatelessWidget {
                 height: 1.1,
                 fontWeight: FontWeight.bold,
               ),
+              textAlign: TextAlign.center,
             ),
           ],
         ).paddingSymmetric(horizontal: 10),

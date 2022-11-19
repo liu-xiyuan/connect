@@ -50,6 +50,5 @@ class FacialExpressionController extends GetxController {
     // 关闭相机, 释放资源
     HideCameraController.to.cameraEngine.release();
     BluetoothController.to.sendKeyRelease();
-    log('colse');
   }
 }

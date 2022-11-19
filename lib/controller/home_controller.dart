@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:connect/controller/lab/shutdown_controller.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/face_verification_controller.dart';
 import 'package:connect/controller/services/hide_camera_controller.dart';
@@ -53,6 +54,7 @@ class HomeController extends GetxController
     Get.put(HideCameraController());
     Get.put(SpeechRecognitionController());
     Get.put(BluetoothController());
+    Get.put(ShutdownController());
   }
 
   /// 显示工具箱列表

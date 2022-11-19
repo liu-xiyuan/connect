@@ -129,7 +129,6 @@ class ToolboxBarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return FeedbackButton(
       onTap: onTap,
-      enableVibrate: true,
       child: Container(
         color: Colors.transparent,
         width: 80,

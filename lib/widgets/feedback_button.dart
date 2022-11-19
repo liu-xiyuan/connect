@@ -42,7 +42,7 @@ class FeedbackButton extends StatelessWidget {
               onTapUp!(_);
             }
             if (enableVibrate) {
-              Vibrate.feedback(FeedbackType.success);
+              Vibrate.feedback(FeedbackType.medium);
             }
           },
           onTapDown: onTapDown,

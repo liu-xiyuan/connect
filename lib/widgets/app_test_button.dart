@@ -14,10 +14,7 @@ class AppTestButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void test() {
-      Get.to(const FacialExpressionPage());
-      // BluetoothController.to.sendKeyWithRelease('B');
-    }
+    void test() {}
 
     return Visibility(
       visible: kDebugMode, // 在debug模式下显示此按钮

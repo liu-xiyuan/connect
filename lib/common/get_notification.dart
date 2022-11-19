@@ -114,15 +114,19 @@ class GetNotification {
     required Function() confirmOnTap,
 
     /// 取消按钮
+    Color? cancelBorderColor,
     Color? cancelTextColor,
     String? cancelTitle,
-    required Function() cancelOnTap,
+    Function()? cancelOnTap,
 
     /// 自定义组件
     List<Widget> children = const <Widget>[],
 
     /// 点击背景是否可以关闭
     bool? isDismissble,
+
+    /// 是否可以滑动关闭
+    bool? enableDrag,
   }) {
     return Get.bottomSheet(
       AppBottomSheetBox(
@@ -161,8 +165,7 @@ class GetNotification {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
                 border: Border.all(
-                  color: confirmBorderColor ??
-                      Theme.of(Get.context!).toggleableActiveColor,
+                  color: confirmBorderColor ?? Colors.black,
                   width: 3,
                 ),
               ),
@@ -171,8 +174,7 @@ class GetNotification {
                   confirmTitle ?? 'confirm'.tr,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: confirmTextColor ??
-                        Theme.of(Get.context!).toggleableActiveColor,
+                    color: confirmTextColor ?? Colors.black,
                     fontSize: 16,
                     height: 1.1,
                   ),
@@ -183,11 +185,18 @@ class GetNotification {
 
           /// 取消按钮
           FeedbackButton(
-            onTap: cancelOnTap,
+            onTap: cancelOnTap ?? () => closeBottomSheet(),
             child: Container(
               width: 175,
               height: 50,
-              color: Colors.transparent,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(25),
+                border: Border.all(
+                  color: cancelBorderColor ?? Colors.transparent,
+                  width: 3,
+                ),
+              ),
               child: Center(
                 child: Text(
                   cancelTitle ?? 'cancel'.tr,
@@ -207,6 +216,7 @@ class GetNotification {
       isScrollControlled: true, // 是否支持全屏弹出
       barrierColor: Colors.black12,
       isDismissible: isDismissble ?? true,
+      enableDrag: enableDrag ?? true,
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:connect/common/get_notification.dart';
+import 'package:connect/controller/lab/shutdown_controller.dart';
 import 'package:connect/controller/services/face_verification_controller.dart';
 import 'package:connect/style/color_palette.dart';
 import 'package:flutter/services.dart';
@@ -141,6 +142,8 @@ class TcpServiceController extends GetxController {
           tipsIcon: FontAwesomeIcons.solidClone,
           tipsIconColor: ColorPalette.green,
         );
+      } else if (data.startsWith('shutdown')) {
+        ShutdownController.to.listener(data);
       }
       log('服务端消息:[$data]');
     });
@@ -247,4 +250,7 @@ enum OtherAction {
 
   /// 打开指定路径的应用
   openApplication,
+
+  /// 定时关机
+  timedShutdown,
 }

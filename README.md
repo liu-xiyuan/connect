@@ -108,6 +108,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 2. 安装其他python所需的第三方库
 
    ```bash
+   pip install winotify
    pip install pyperclip
    pip install win32 //如果使用Anaconda3则无需安装
    pip install PyUserInput	// 需先安装pyHook和win32

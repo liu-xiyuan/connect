@@ -7,14 +7,20 @@ import 'package:get/get.dart';
 class LabItemCard extends StatelessWidget {
   const LabItemCard({
     Key? key,
-    required this.onTap,
     required this.title,
+    required this.onTap,
     required this.icons,
+    this.mainColor,
+    this.cardColors,
+    this.colorsStops,
   }) : super(key: key);
 
   final Function() onTap;
   final String title;
   final List<IconData> icons;
+  final Color? mainColor;
+  final List<Color>? cardColors;
+  final List<double>? colorsStops;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +30,7 @@ class LabItemCard extends StatelessWidget {
       iconList.add(
         FaIcon(
           item,
-          color: Colors.white,
+          color: mainColor ?? Colors.white,
           size: 30,
         ),
       );
@@ -39,10 +45,12 @@ class LabItemCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.bottomRight,
             end: Alignment.topLeft,
-            colors: [
-              ColorUtil.hex('#434343'),
-              Colors.black,
-            ],
+            colors: cardColors ??
+                [
+                  ColorUtil.hex('#434343'),
+                  Colors.black,
+                ],
+            stops: colorsStops,
           ),
           borderRadius: BorderRadius.circular(25),
         ),
@@ -56,8 +64,8 @@ class LabItemCard extends StatelessWidget {
             const Expanded(child: SizedBox()),
             Text(
               title,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: mainColor ?? Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -65,11 +73,11 @@ class LabItemCard extends StatelessWidget {
             const Expanded(child: SizedBox()),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
+              children: [
                 FaIcon(
-                  FontAwesomeIcons.arrowRightToBracket,
-                  size: 18,
-                  color: Colors.white,
+                  FontAwesomeIcons.solidCircle,
+                  size: 10,
+                  color: mainColor ?? Colors.white,
                 )
               ],
             )
