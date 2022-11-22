@@ -23,6 +23,8 @@ def other_manager(client_socket, dataList: list):
         _open_application(data)
     elif action == 'OtherAction.timedShutdown':
         _timed_shutdown(data, client_socket)
+    elif action == 'OtherAction.copyTranslator':
+        _copy_translator(data)
 
 
 # 锁定电脑
@@ -55,6 +57,20 @@ def _open_application(data: str):
         print('_open_application: 应用路径不存在!')
 
 
+# 将翻译目标文本写入剪贴板
+def _copy_translator(data: str):
+    pyperclip.copy(data)
+    toast = Notification(
+        app_id="Connect",
+        title="Connect Translator",
+        msg="📌 翻译文本已复制至剪切板",
+        icon=r"D:\DeveloperTools\code\Flutter\connect\connectServer\assets\icon.png"
+    )
+    toast.set_audio(audio.Mail, loop=False)
+    toast.add_actions(label="确认", launch="")
+    toast.show()
+
+
 # 定时关机
 def _timed_shutdown(data: str, client_socket):
     timerList = data.split(',')
@@ -75,7 +91,7 @@ def _timed_shutdown(data: str, client_socket):
             toast.add_actions(label="确认", launch="")
             toast.show()
 
-        except:
+        except():
             client_socket.send('shutdown,start,F'.encode("utf8"))
     else:
         try:
@@ -92,6 +108,5 @@ def _timed_shutdown(data: str, client_socket):
             toast.add_actions(label="确认", launch="")
             toast.show()
 
-
-        except:
+        except():
             client_socket.send('shutdown,clear,F'.encode("utf8"))

@@ -1,4 +1,4 @@
-import 'package:connect/style/color_palette.dart';
+import 'package:connect/style/app_theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -26,10 +26,9 @@ class SettingsGroup extends StatelessWidget {
           // 设置组标题
           Text(
             title ?? '',
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  color: ColorPalette.grey,
+            style: Theme.of(context).textTheme.caption!.copyWith(
+                  color: AppThemeStyle.clearGrey,
                   fontWeight: FontWeight.normal,
-                  fontSize: 12,
                 ),
           ).marginOnly(top: 25),
           Column(
@@ -70,14 +69,14 @@ class SettingsItem extends StatelessWidget {
           Text(
             settingInfo ?? '',
             style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  color: ColorPalette.grey,
+                  color: AppThemeStyle.clearGrey,
                   fontWeight: FontWeight.normal,
                 ),
           ),
           FaIcon(
             FontAwesomeIcons.angleRight,
             size: 15,
-            color: ColorPalette.grey,
+            color: AppThemeStyle.clearGrey,
           ).marginOnly(left: 15),
         ],
       ).marginSymmetric(vertical: 20),

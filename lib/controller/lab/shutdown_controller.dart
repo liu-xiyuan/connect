@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:connect/common/get_notification.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
-import 'package:connect/controller/settings_controller.dart';
-import 'package:connect/style/color_palette.dart';
+import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/timer_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,7 +20,7 @@ class ShutdownController extends GetxController {
   /// 关机时间
   var shutdownData = DateTime.now().obs;
 
-  var hour = 0.obs;
+  var hour = 1.obs;
   var minute = 0.obs;
 
   /// 计时器
@@ -65,11 +62,11 @@ class ShutdownController extends GetxController {
               shutdownData.value.minute == dateTime.minute) {
             isTiming.value = false;
 
-            GetNotification.showSnackbar(
+            GetNotification.showCustomSnackbar(
               'Timed Shutdown',
               'Windows is closing',
               tipsIcon: FontAwesomeIcons.powerOff,
-              tipsIconColor: ColorPalette.green,
+              tipsIconColor: AppThemeStyle.green,
             );
             timer.cancel();
             await prefs.setBool('shutdown_timing', isTiming.value);
@@ -86,11 +83,11 @@ class ShutdownController extends GetxController {
     switch (dataList[1]) {
       case 'start':
         if (dataList[2] == 'T') {
-          GetNotification.showSnackbar(
+          GetNotification.showCustomSnackbar(
             'Timed Shutdown',
             'Windows will shutdown in ${hour.value == 0 ? '' : '${hour.value} hour'} ${minute.value == 0 ? '' : '${minute.value} minutes'} 💤',
             tipsIcon: FontAwesomeIcons.solidClock,
-            tipsIconColor: ColorPalette.green,
+            tipsIconColor: AppThemeStyle.green,
           );
           shutdownData.value = DateTime.now()
               .add(Duration(hours: hour.value))
@@ -105,30 +102,30 @@ class ShutdownController extends GetxController {
           isTiming.value = true;
           initTimer();
         } else {
-          GetNotification.showSnackbar(
+          GetNotification.showCustomSnackbar(
             'Timed Shutdown',
             'Unknown error!',
             tipsIcon: FontAwesomeIcons.solidClock,
-            tipsIconColor: ColorPalette.red,
+            tipsIconColor: AppThemeStyle.red,
           );
           isTiming.value = false;
         }
         break;
       case 'clear':
         if (dataList[2] == 'T') {
-          GetNotification.showSnackbar(
+          GetNotification.showCustomSnackbar(
             'Timed Shutdown',
             'Timing has been cancelled',
             tipsIcon: FontAwesomeIcons.solidCircleCheck,
-            tipsIconColor: ColorPalette.green,
+            tipsIconColor: AppThemeStyle.green,
           );
           isTiming.value = false;
         } else {
-          GetNotification.showSnackbar(
+          GetNotification.showCustomSnackbar(
             'Timed Shutdown',
             'Cannot cancel timer, Try again',
             tipsIcon: FontAwesomeIcons.solidClock,
-            tipsIconColor: ColorPalette.red,
+            tipsIconColor: AppThemeStyle.red,
           );
         }
         break;
@@ -152,8 +149,7 @@ class ShutdownController extends GetxController {
             data: '${hour.value},${minute.value}',
           );
         },
-        confirmBorderColor: Colors.black,
-        confirmTextColor: Colors.black,
+        confirmBorderColor: AppThemeStyle.clearGrey,
         enableDrag: false,
         children: [
           TimerPicker(

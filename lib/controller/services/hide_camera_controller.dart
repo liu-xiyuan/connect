@@ -1,10 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:connect/common/color_util.dart';
 import 'package:connect/common/get_notification.dart';
-import 'package:connect/controller/services/face_verification_controller.dart';
-import 'package:connect/style/color_palette.dart';
+import 'package:connect/controller/services/ml_face_controller.dart';
+import 'package:connect/style/app_theme_style.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:huawei_ml_body/huawei_ml_body.dart';
@@ -38,13 +37,12 @@ class HideCameraController extends GetxController {
     // 创建一个镜头引擎对象并指定控制器。
     cameraEngine = MLBodyLensEngine(controller: controller);
 
-    // 然后将回调传递给引擎的setTransactor方法。
+    // 将回调传递给引擎的setTransactor方法。
     cameraEngine.setTransactor(onTransaction);
 
     // 初始化相机流的ID值。
     await cameraEngine.init().then((value) {
-      // 将textureId变量设置为返回值。
-      // 然后，纹理将准备好流。
+      //纹理流。
       textureId.value = value;
     });
   }
@@ -68,12 +66,13 @@ class HideCameraController extends GetxController {
     Future.delayed(const Duration(seconds: 5), () {
       if (debounceCount.value == 0) {
         cameraEngine.release();
-        GetNotification.showSnackbar(
-          'Face Unlock',
-          'No face is detected !',
-          tipsIcon: FontAwesomeIcons.solidFaceMehBlank,
-          tipsIconColor: ColorUtil.hex("#495057"),
-        );
+        // GetNotification.showCustomSnackbar(
+        //   'Face Unlock',
+        //   'No face is detected !',
+        //   tipsIcon: FontAwesomeIcons.solidFaceMehBlank,
+        //   tipsIconColor: ColorUtil.hex("#495057"),
+        // );
+        MlFaceController.to.showResult(FaceVerificationResult.noFace);
       }
     });
 
@@ -83,7 +82,7 @@ class HideCameraController extends GetxController {
       debounceCount,
       (_) async {
         if (await saveCameraImage()) {
-          FaceVerificationController.to.startFaceVerification(); // 进行面部识别
+          MlFaceController.to.startFaceVerification(); // 进行面部识别
         }
       },
     );
@@ -96,17 +95,17 @@ class HideCameraController extends GetxController {
       // 关闭相机
       cameraEngine.release();
       // 将面部图片保存在本地
-      File(FaceVerificationController.to.faceLocalPath).writeAsBytes(
+      File(MlFaceController.to.faceLocalPath).writeAsBytes(
         imgUint8List,
         mode: FileMode.write,
       );
       return true;
     } catch (e) {
-      GetNotification.showSnackbar(
+      GetNotification.showCustomSnackbar(
         'Face Unlock',
         'Face capture error, please try again.',
         tipsIcon: FontAwesomeIcons.camera,
-        tipsIconColor: ColorPalette.red,
+        tipsIconColor: AppThemeStyle.red,
       );
       cameraEngine.release();
       log(e.toString());

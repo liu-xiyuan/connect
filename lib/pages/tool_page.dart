@@ -1,40 +1,41 @@
 import 'package:connect/common/color_util.dart';
-import 'package:connect/common/get_notification.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
-import 'package:connect/controller/services/face_verification_controller.dart';
-import 'package:connect/controller/services/speech_recognition_controller.dart';
+import 'package:connect/controller/services/ml_face_controller.dart';
+import 'package:connect/controller/services/ml_speech_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
-import 'package:connect/widgets/app_bottomsheet_box.dart';
+import 'package:connect/controller/tool_controller.dart';
+import 'package:connect/style/app_theme_style.dart';
+import 'package:connect/widgets/app_page_template.dart';
 import 'package:connect/widgets/feedback_button.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
-class ToolboxBar extends StatelessWidget {
-  const ToolboxBar({Key? key}) : super(key: key);
+class ToolPage extends GetView<ToolController> {
+  const ToolPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return AppBottomSheetBox(
-      direction: Axis.vertical,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(.1),
-          offset: const Offset(0, 2),
-          spreadRadius: 2,
-          blurRadius: 10,
-        ),
-      ],
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    Get.put(ToolController());
+    return AppPageTemplate(
+      appBarTitle: "Tools",
+      leading: const SizedBox(),
+      child: GestureDetector(
+        onHorizontalDragUpdate: (e) => controller.onHorizontalDragUpdate(e),
+        onHorizontalDragEnd: (_) => controller.onHorizontalDragEnd(),
+        child: GridView(
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            childAspectRatio: 1.3,
+            crossAxisCount: 5,
+            crossAxisSpacing: 70,
+            mainAxisSpacing: 70,
+          ),
           children: [
             // 电脑锁屏
-            ToolboxBarItem(
+            ToolItem(
               onTap: () {
-                GetNotification.closeBottomSheet();
+                Get.offNamed('/');
                 TcpServiceController.to.sendData(
                   TcpCommands.otherAction,
                   OtherAction.lockScreen,
@@ -46,10 +47,10 @@ class ToolboxBar extends StatelessWidget {
             ),
 
             // 语音
-            ToolboxBarItem(
+            ToolItem(
               onTap: () {
-                GetNotification.closeBottomSheet();
-                SpeechRecognitionController.to.showSpeechInterface();
+                Get.offNamed('/');
+                MlSpeechController.to.showSpeechInterface();
               },
               title: 'Speech',
               // icon: AppCustomIcons.waveformLine,
@@ -58,61 +59,72 @@ class ToolboxBar extends StatelessWidget {
             ),
 
             // 面部解锁
-            ToolboxBarItem(
+            ToolItem(
               onTap: () {
-                GetNotification.closeBottomSheet();
-                FaceVerificationController.to.showFaceInterface();
+                Get.back();
+                MlFaceController.to.showFaceInterface();
               },
               title: 'Face Unlock',
               icon: FontAwesomeIcons.solidFaceGrinTongueSquint,
               iconColor: ColorUtil.hex("#39ceab"),
             ),
-          ],
-        ),
-        const SizedBox(height: 5),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+
             // 实验室
-            ToolboxBarItem(
+            ToolItem(
               onTap: () {
-                GetNotification.closeBottomSheet();
                 Get.toNamed('/lab');
               },
               title: 'Laboratory',
-              icon: FontAwesomeIcons.flask,
+              icon: FontAwesomeIcons.microscope,
               iconColor: ColorUtil.hex("#797dff"),
             ),
 
             // 手势识别
-            ToolboxBarItem(
-              onTap: () {
-                GetNotification.closeBottomSheet();
-              },
+            ToolItem(
+              onTap: () {},
               title: 'Gesture',
               icon: FontAwesomeIcons.handSparkles,
               iconColor: ColorUtil.hex("#fec441"),
             ),
 
             // 媒体控制器
-            ToolboxBarItem(
+            ToolItem(
               onTap: () {
-                GetNotification.closeBottomSheet();
                 BluetoothController.to.showMediaInterface();
               },
               title: 'Media Control',
               icon: FontAwesomeIcons.icons,
               iconColor: ColorUtil.hex('#f65e6b'),
             ),
+
+            // 设置页面
+            ToolItem(
+              onTap: () {
+                Get.toNamed('/settings');
+              },
+              title: 'Settings',
+              icon: FontAwesomeIcons.gear,
+              iconColor: ColorUtil.hex('#3bc4c3'),
+            ),
+
+            // 关于页面
+            ToolItem(
+              onTap: () {
+                Get.toNamed('/about');
+              },
+              title: 'About',
+              icon: FontAwesomeIcons.circleInfo,
+              iconColor: ColorUtil.hex('#fe759f'),
+            ),
           ],
         ),
-      ],
+      ),
     );
   }
 }
 
-class ToolboxBarItem extends StatelessWidget {
-  const ToolboxBarItem({
+class ToolItem extends StatelessWidget {
+  const ToolItem({
     Key? key,
     required this.title,
     required this.icon,
@@ -131,24 +143,20 @@ class ToolboxBarItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         color: Colors.transparent,
-        width: 80,
+        width: 50,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             FaIcon(
               icon,
-              size: 25,
-              color: iconColor ?? Colors.black,
-            ),
+              size: 30,
+              color: iconColor ?? AppThemeStyle.white,
+            ).marginOnly(bottom: 15),
             Text(
               title,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 10,
-                // height: 1.4,
-              ),
+              style: Theme.of(context).textTheme.subtitle2,
               textAlign: TextAlign.center,
-            ).marginOnly(top: 5),
+            ),
           ],
         ).marginSymmetric(vertical: 10),
       ),

@@ -1,4 +1,5 @@
 import 'package:connect/common/color_util.dart';
+import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/feedback_button.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -30,7 +31,7 @@ class LabItemCard extends StatelessWidget {
       iconList.add(
         FaIcon(
           item,
-          color: mainColor ?? Colors.white,
+          color: mainColor ?? AppThemeStyle.white,
           size: 30,
         ),
       );
@@ -65,7 +66,7 @@ class LabItemCard extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                color: mainColor ?? Colors.white,
+                color: mainColor ?? AppThemeStyle.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -77,7 +78,7 @@ class LabItemCard extends StatelessWidget {
                 FaIcon(
                   FontAwesomeIcons.solidCircle,
                   size: 10,
-                  color: mainColor ?? Colors.white,
+                  color: mainColor ?? AppThemeStyle.white,
                 )
               ],
             )

@@ -1,20 +1,19 @@
-import 'dart:developer';
-
-import 'package:connect/controller/services/speech_recognition_controller.dart';
+import 'package:connect/controller/services/ml_speech_controller.dart';
 import 'package:connect/style/app_custom_icons.dart';
+import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/feedback_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:siri_wave/siri_wave.dart';
 
 /// 语音识别BottomSheet
-/// 使用Get.bottomSheet(SpeechFaceInterface())调用
-class SpeechFaceInterface extends GetView<SpeechRecognitionController> {
+/// 使用: Get.bottomSheet(SpeechFaceInterface())
+class SpeechFaceInterface extends GetView<MlSpeechController> {
   const SpeechFaceInterface({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SpeechRecognitionController>(
+    return GetBuilder<MlSpeechController>(
       initState: (_) => controller.startSpeechRecognition(),
       dispose: (_) => controller.stopSpeechRecognition(),
       builder: (_) => Obx(
@@ -31,25 +30,22 @@ class SpeechFaceInterface extends GetView<SpeechRecognitionController> {
                   width: context.width,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [
-                        Colors.black,
-                        Colors.black.withOpacity(.5),
-                      ],
-                    ),
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.black.withOpacity(.5), Colors.black],
+                        stops: const [0, .6]),
                   ),
                 ),
               ),
 
               // SiriWave
               Positioned(
-                bottom: -20,
+                bottom: -30,
                 child: AnimatedScale(
-                  scale: controller.recognizerStatus.value ==
-                          SpeechRecognizerStatus.closed
-                      ? 0
-                      : 1,
+                  scale:
+                      controller.recognizerStatus.value == SpeechStatus.closed
+                          ? 0
+                          : 1,
                   duration: const Duration(milliseconds: 200),
                   child: SiriWave(
                     controller: controller.siriWaveControlle,
@@ -62,7 +58,7 @@ class SpeechFaceInterface extends GetView<SpeechRecognitionController> {
               ),
 
               Container(
-                margin: const EdgeInsets.only(bottom: 115),
+                margin: const EdgeInsets.only(left: 35, bottom: 90),
                 padding: const EdgeInsets.only(top: 40, bottom: 20),
                 color: Colors.transparent,
                 child: Column(
@@ -72,12 +68,11 @@ class SpeechFaceInterface extends GetView<SpeechRecognitionController> {
                     //语音转换的文字
                     Text(
                       controller.speechText.value,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                      ),
-                    ).marginOnly(left: 20, bottom: 20),
-
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(fontSize: 20),
+                    ).marginOnly(bottom: 15),
                     // 命令模式列表
                     SizedBox(
                       height: 30,
@@ -97,23 +92,20 @@ class SpeechFaceInterface extends GetView<SpeechRecognitionController> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 decoration: BoxDecoration(
-                                  color:
-                                      controller.commandModeIndex.value == index
-                                          ? Colors.white.withOpacity(.4)
-                                          : Colors.grey.withOpacity(.3),
+                                  color: controller.commandModeIndex.value ==
+                                          index
+                                      ? AppThemeStyle.darkGrey
+                                      : AppThemeStyle.darkGrey.withOpacity(.5),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Center(
                                   child: Text(
                                     controller.commandModeList[index],
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                    ),
+                                    style: Theme.of(context).textTheme.caption,
                                   ),
                                 ),
                               ),
-                            ).marginOnly(left: index == 0 ? 20 : 5, right: 5),
+                            ).marginOnly(right: 10),
                           );
                         },
                       ),
@@ -124,12 +116,12 @@ class SpeechFaceInterface extends GetView<SpeechRecognitionController> {
 
               // 语音识别按钮
               Positioned(
-                bottom: 40,
+                bottom: 30,
                 child: AnimatedScale(
-                  scale: controller.recognizerStatus.value ==
-                          SpeechRecognizerStatus.closed
-                      ? 1
-                      : 0,
+                  scale:
+                      controller.recognizerStatus.value == SpeechStatus.closed
+                          ? 1
+                          : 0,
                   duration: const Duration(milliseconds: 200),
                   child: FeedbackButton(
                     onTap: () => controller.startSpeechRecognition(),

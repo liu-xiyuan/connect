@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/hide_camera_controller.dart';
 import 'package:get/get.dart';

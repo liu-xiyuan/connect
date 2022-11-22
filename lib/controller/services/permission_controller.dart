@@ -1,5 +1,5 @@
 import 'package:connect/common/get_notification.dart';
-import 'package:connect/style/color_palette.dart';
+import 'package:connect/style/app_theme_style.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -20,11 +20,11 @@ class PermissionController extends GetxController {
     if (cameraStatus.isGranted && storageStatus.isGranted) {
       return true;
     } else {
-      GetNotification.showSnackbar(
+      GetNotification.showCustomSnackbar(
         "Missing Permissions ",
         "Please allow relevant permissions!",
         tipsIcon: FontAwesomeIcons.circleExclamation,
-        tipsIconColor: ColorPalette.red,
+        tipsIconColor: AppThemeStyle.red,
       );
       return false;
     }
@@ -37,11 +37,11 @@ class PermissionController extends GetxController {
     if (speechStatus.isGranted) {
       return true;
     } else {
-      GetNotification.showSnackbar(
+      GetNotification.showCustomSnackbar(
         "Missing Recording permission",
         "Please allow relevant permissions!",
         tipsIcon: FontAwesomeIcons.circleExclamation,
-        tipsIconColor: ColorPalette.red,
+        tipsIconColor: AppThemeStyle.red,
       );
       return false;
     }
@@ -54,11 +54,11 @@ class PermissionController extends GetxController {
     if (blueStatus.isGranted) {
       return true;
     } else {
-      GetNotification.showSnackbar(
+      GetNotification.showCustomSnackbar(
         "Bluetooth connection failed",
         "Missing Bluetooth permissions !",
         tipsIcon: FontAwesomeIcons.circleExclamation,
-        tipsIconColor: ColorPalette.red,
+        tipsIconColor: AppThemeStyle.red,
       );
       return false;
     }

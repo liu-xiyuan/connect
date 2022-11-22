@@ -13,11 +13,11 @@ class LabPage extends GetView<ShutdownController> {
   @override
   Widget build(BuildContext context) {
     return AppPageTemplate(
-      pageTitle: 'Laboratory',
+      appBarTitle: 'Laboratory',
       subPageTitle: 'Some interesting and/or useless functions',
       child: GridView(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+          crossAxisCount: 4,
           crossAxisSpacing: 30,
           mainAxisSpacing: 20,
           childAspectRatio: .8,

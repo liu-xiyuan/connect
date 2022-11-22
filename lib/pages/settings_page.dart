@@ -1,4 +1,6 @@
 import 'package:connect/common/get_notification.dart';
+import 'package:connect/controller/services/bluetooth_controller.dart';
+import 'package:connect/controller/services/tcp_service_controller.dart';
 import 'package:connect/controller/settings_controller.dart';
 import 'package:connect/widgets/app_page_template.dart';
 import 'package:connect/widgets/app_text_field.dart';
@@ -26,25 +28,8 @@ class SettingsPage extends GetView<SettingsController> {
               items: [
                 SettingsItem(
                   title: 'IP Address',
-                  settingInfo: controller.ipAddress.value,
-                  onTap: () {
-                    GetNotification.showCustomBottomSheet(
-                      title: 'Set ip address',
-                      confirmTextColor: Colors.black,
-                      confirmBorderColor: Colors.black,
-                      confirmOnTap: () {
-                        controller.updateIpAddress();
-                        Get.back();
-                      },
-                      cancelOnTap: () => Get.back(),
-                      children: [
-                        AppTextField(
-                          initText: controller.ipAddress.value,
-                          hintText: 'Input: 192.127.0.106:8888',
-                        ).marginSymmetric(vertical: 20),
-                      ],
-                    );
-                  },
+                  settingInfo: TcpServiceController.to.ipAddress.value,
+                  onTap: () => TcpServiceController.to.showEditSheet(),
                 ),
                 SettingsItem(
                   title: 'LockScreen Password',
@@ -74,25 +59,8 @@ class SettingsPage extends GetView<SettingsController> {
               items: [
                 SettingsItem(
                   title: 'MAC Address',
-                  settingInfo: controller.macAddress.value,
-                  onTap: () {
-                    GetNotification.showCustomBottomSheet(
-                      title: 'Set mac address',
-                      confirmTextColor: Colors.black,
-                      confirmBorderColor: Colors.black,
-                      confirmOnTap: () {
-                        controller.updateMacAddress();
-                        Get.back();
-                      },
-                      cancelOnTap: () => Get.back(),
-                      children: [
-                        AppTextField(
-                          initText: controller.macAddress.value,
-                          hintText: 'Input: 35:7G:F4:77:C2:9F',
-                        ).marginSymmetric(vertical: 20),
-                      ],
-                    );
-                  },
+                  settingInfo: BluetoothController.to.macAddress.value,
+                  onTap: () => BluetoothController.to.showEditSheet(),
                 )
               ],
             ),

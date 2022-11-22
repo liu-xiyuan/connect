@@ -1,9 +1,7 @@
-import 'dart:developer';
-
 import 'package:connect/common/get_notification.dart';
 import 'package:connect/controller/text_field_controller.dart';
+import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/app_text_field.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,8 +31,7 @@ class MediaController extends GetxController {
   void updataLaunchPath() async {
     GetNotification.showCustomBottomSheet(
       title: 'Set Launch Path',
-      confirmTextColor: Colors.black,
-      confirmBorderColor: Colors.black,
+      confirmBorderColor: AppThemeStyle.clearGrey,
       confirmOnTap: () async {
         String path = TextFieldController.to.editController.text;
         launchPath.value = path;
