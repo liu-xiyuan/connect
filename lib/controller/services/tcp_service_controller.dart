@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:connect/common/get_notification.dart';
-import 'package:connect/controller/services/face_verification_controller.dart';
-import 'package:connect/style/color_palette.dart';
+import 'package:connect/controller/lab/shutdown_controller.dart';
+import 'package:connect/controller/services/ml_face_controller.dart';
+import 'package:connect/controller/services/ml_translation_controller.dart';
+import 'package:connect/controller/text_field_controller.dart';
+import 'package:connect/style/app_theme_style.dart';
+import 'package:connect/widgets/app_text_field.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -13,6 +17,8 @@ class TcpServiceController extends GetxController {
   static TcpServiceController get to => Get.find();
 
   TcpClient? tcpClient;
+
+  RxString ipAddress = "".obs;
   late String host;
   late int port;
 
@@ -27,11 +33,14 @@ class TcpServiceController extends GetxController {
   /// 心跳检查
   var isHeartbeatAlive = false;
 
+  /// 翻译功能节流指示器
+  var translatorCount = 0.obs;
+
   @override
-  void onReady() async {
-    super.onReady();
+  void onInit() async {
     await initIPaddress();
-    connectToPCserver();
+    connect();
+    super.onInit();
   }
 
   /// 初始化ip地址
@@ -39,111 +48,155 @@ class TcpServiceController extends GetxController {
     prefs = await SharedPreferences.getInstance();
     host = prefs.getString('host') ?? '192.168.0.100';
     port = prefs.getInt('port') ?? 8888;
+    ipAddress.value = '$host:$port';
+  }
+
+  /// 更新ip地址
+  void updateIpAddress() async {
+    List data = TextFieldController.to.editController.text.split(':');
+    TcpServiceController.to.host = data[0];
+    TcpServiceController.to.port = int.parse(data[1]);
+    ipAddress.value = TextFieldController.to.editController.text;
+
+    // 持久化保存
+    await prefs.setString('host', data[0]);
+    await prefs.setInt('port', int.parse(data[1]));
+  }
+
+  /// 显示IP地址编辑框
+  void showEditSheet({
+    bool isSavedConnect = false, // 是否保存并连接
+  }) {
+    GetNotification.showCustomBottomSheet(
+      title: 'Set IP address',
+      confirmTitle: isSavedConnect ? "Save & Connect" : "Save",
+      confirmBorderColor: AppThemeStyle.clearGrey,
+      confirmOnTap: () {
+        updateIpAddress();
+        Get.back();
+        if (isSavedConnect) {
+          connect();
+        }
+      },
+      cancelOnTap: () => Get.back(),
+      children: [
+        AppTextField(
+          initText: ipAddress.value,
+          hintText: 'Input: 192.127.0.106:8888',
+        ).marginSymmetric(vertical: 20),
+      ],
+    );
   }
 
   /// 连接到pc服务端
-  void connectToPCserver() async {
+  void connect() async {
     tcpClient?.close();
     heartbeatTimer?.cancel();
 
-    // 是否开启debug模式
-    TcpClient.debug = false;
+    TcpClient.debug = false; // 是否开启debug模式
 
-    // 连接到pc服务端
     try {
-      tcpClient = await TcpClient.connect(host, port);
+      tcpClient = await TcpClient.connect(host, port); // 连接到pc服务端
     } catch (e) {
       // // 判断连接是否超时
       if (e.toString().contains('Connection timed out')) {
-        GetNotification.showSnackbar(
-          'TCP disconnected',
+        GetNotification.showCustomSnackbar(
+          'TCP connection timeout',
           'Check IP address and PC server',
           tipsIcon: FontAwesomeIcons.server,
-          tipsIconColor: ColorPalette.red,
+          tipsIconColor: AppThemeStyle.red,
         );
       }
       log('TCP连接超时:[$e]');
       return;
     }
 
-    /// 监听TCP连接状态
-    tcpClient?.connectionStream.listen((status) {
-      tcpSocketState.value = status;
+    tcpClient?.connectionStream.listen(statusListener);
+    tcpClient?.stringStream.listen(stringStreamListener);
+  }
 
-      if (status == TcpConnectionState.connected) {
-        isHeartbeatAlive = true;
-      } else {
-        isHeartbeatAlive = false;
-      }
+  /// 监听TCP的连接状态
+  void statusListener(TcpConnectionState status) {
+    tcpSocketState.value = status;
 
-      switch (status) {
-        case TcpConnectionState.connecting: // 连接中
-          {
-            log('TCP连接中...');
-          }
-          break;
-        case TcpConnectionState.connected: // 已连接
-          {
-            GetNotification.showSnackbar(
-              'TCP connected',
-              'TCP is already connected',
-              tipsIcon: FontAwesomeIcons.server,
-              tipsIconColor: ColorPalette.green,
-            );
+    if (status == TcpConnectionState.connected) {
+      isHeartbeatAlive = true;
+    } else {
+      isHeartbeatAlive = false;
+    }
 
-            // 启动心跳服务
-            heartbeatSocket();
+    switch (status) {
+      case TcpConnectionState.connecting: // 连接中
+        {
+          log('TCP连接中...');
+        }
+        break;
+      case TcpConnectionState.connected: // 已连接
+        {
+          GetNotification.showCustomSnackbar(
+            'TCP connected',
+            'TCP is already connected',
+            tipsIcon: FontAwesomeIcons.server,
+            tipsIconColor: AppThemeStyle.green,
+          );
 
-            log('TCP连接成功!');
-          }
-          break;
-        case TcpConnectionState.disconnected: // 连接关闭
-          {
-            GetNotification.showSnackbar(
-              'TCP disconnected',
-              'Check IP address and PC server',
-              tipsIcon: FontAwesomeIcons.server,
-              tipsIconColor: ColorPalette.red,
-            );
-            log('TCP连接关闭!');
-          }
-          break;
-        case TcpConnectionState.failed: // 连接失败
-          {
-            GetNotification.showSnackbar(
-              'TCP disconnected',
-              'Check IP address and PC server',
-              tipsIcon: FontAwesomeIcons.server,
-              tipsIconColor: ColorPalette.red,
-            );
-            log('TCP连接失败!');
-          }
-          break;
-        default:
-      }
-    });
+          // 启动心跳服务
+          heartbeatSocket();
 
-    /// 监听接收的数据
-    tcpClient?.stringStream.listen((data) {
-      if (data == 'Heartbeat') {
-        isHeartbeatAlive = true;
-      } else if (data == 'Locked screen') {
-        FaceVerificationController.to.isLockScreen = true;
-        FaceVerificationController.to.unlockComputer();
-      } else if (data == 'No lock screen') {
-        FaceVerificationController.to.isLockScreen = false;
-      } else if (data.startsWith('copyText:')) {
-        String text = data.split('copyText:')[1];
-        Clipboard.setData(ClipboardData(text: text));
-        GetNotification.showSnackbar(
-          'Text Copy',
-          'Text has been copied to the clipboard',
-          tipsIcon: FontAwesomeIcons.solidClone,
-          tipsIconColor: ColorPalette.green,
-        );
-      }
-      log('服务端消息:[$data]');
-    });
+          log('TCP连接成功!');
+        }
+        break;
+      case TcpConnectionState.disconnected: // 连接关闭
+        {
+          GetNotification.showCustomSnackbar(
+            'TCP disconnected',
+            'Disconnected for unknown reasons',
+            tipsIcon: FontAwesomeIcons.plugCircleXmark,
+            tipsIconColor: AppThemeStyle.red,
+          );
+          log('TCP连接关闭!');
+        }
+        break;
+      case TcpConnectionState.failed: // 连接失败
+        {
+          GetNotification.showCustomSnackbar(
+            'TCP connection failed',
+            'Check IP address and PC server',
+            tipsIcon: FontAwesomeIcons.server,
+            tipsIconColor: AppThemeStyle.red,
+          );
+          log('TCP连接失败!');
+        }
+        break;
+      default:
+    }
+  }
+
+  /// 监听从服务器端返回的数据
+  void stringStreamListener(String data) {
+    if (data == 'Heartbeat') {
+      isHeartbeatAlive = true;
+    } else if (data == 'Locked screen') {
+      MlFaceController.to.isLockScreen = true;
+      MlFaceController.to.unlockComputer();
+    } else if (data == 'No lock screen') {
+      MlFaceController.to.isLockScreen = false;
+    } else if (data.startsWith('copyText:')) {
+      String text = data.split('copyText:')[1];
+      Clipboard.setData(ClipboardData(text: text));
+      GetNotification.showCustomSnackbar(
+        'Text Copy',
+        'Text has been copied to the clipboard',
+        tipsIcon: FontAwesomeIcons.solidClone,
+        tipsIconColor: AppThemeStyle.green,
+      );
+    } else if (data.startsWith('shutdown')) {
+      ShutdownController.to.listener(data);
+    } else if (data.startsWith('Translate:')) {
+      String source = data.split('Translate:')[1];
+      MlTranslatorController.to.showTranslate(source);
+    }
+    log('服务端消息:[$data]');
   }
 
   /// 心跳服务
@@ -154,8 +207,7 @@ class TcpServiceController extends GetxController {
     heartbeatTimer = Timer.periodic(timeInterval, (timer) async {
       if (!isHeartbeatAlive) {
         tcpSocketState.value = TcpConnectionState.disconnected;
-
-        connectToPCserver();
+        connect();
       } else {
         sendData(TcpCommands.heartbeatAction, 'null');
       }
@@ -172,16 +224,14 @@ class TcpServiceController extends GetxController {
       log('发送消息:[$dataText]');
       return true;
     } catch (e) {
-      // 尝试重新连接
-      connectToPCserver();
-
-      // 尝试重新发送数据
+      // 尝试重新连接并发送数据
+      connect();
       try {
         tcpClient!.send(dataText);
         log('重新发送消息:[$dataText]');
         return true;
       } catch (e) {
-        log('消息发送失败');
+        log('消息发送失败!');
         return false;
       }
     }
@@ -247,4 +297,10 @@ enum OtherAction {
 
   /// 打开指定路径的应用
   openApplication,
+
+  /// 定时关机
+  timedShutdown,
+
+  /// 复制翻译的目标文本至电脑端剪贴板
+  copyTranslator
 }

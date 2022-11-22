@@ -6,7 +6,7 @@ import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/hide_camera_controller.dart';
 import 'package:connect/controller/services/permission_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
-import 'package:connect/style/color_palette.dart';
+import 'package:connect/style/app_theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -16,9 +16,9 @@ import 'package:huawei_ml_body/huawei_ml_body.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// HMS面部识别控制器
-class FaceVerificationController extends GetxController {
-  static FaceVerificationController get to => Get.find();
+/// 面部识别服务
+class MlFaceController extends GetxController {
+  static MlFaceController get to => Get.find();
 
   /// 面部模板的本地路径 (手机图片存储路径)
   late String faceTemplateLocalPath;
@@ -33,6 +33,10 @@ class FaceVerificationController extends GetxController {
   void onInit() {
     super.onInit();
     initFaceTemplate();
+    HideCameraController.to.initCameraEngine(
+      bodyTransaction: BodyTransaction.skeleton, // face识别bug, 用skeleton(骨架)代替
+      onTransaction: ({dynamic result}) {},
+    );
   }
 
   /// 初始化面部模板
@@ -91,19 +95,9 @@ class FaceVerificationController extends GetxController {
         );
 
         // 显示面部识别成功提示
-        GetNotification.showSnackbar(
-          'Face Unlock',
-          'Face recognition success',
-          tipsIcon: FontAwesomeIcons.solidCircleCheck,
-          tipsIconColor: ColorPalette.green,
-        );
+        showResult(FaceVerificationResult.success);
       } else {
-        GetNotification.showSnackbar(
-          "Face Unlock",
-          "Face recognition failure!",
-          tipsIcon: FontAwesomeIcons.solidFaceMeh,
-          tipsIconColor: ColorPalette.red,
-        );
+        showResult(FaceVerificationResult.failure);
       }
     }
   }
@@ -121,26 +115,26 @@ class FaceVerificationController extends GetxController {
           BluetoothController.to.sendKeyWithRelease('ESC');
 
           // 等待500ms后输入密码
-          Future.delayed(const Duration(milliseconds: 500), () {
+          Future.delayed(const Duration(milliseconds: 800), () {
             for (var e in pwdList) {
               BluetoothController.to.sendKeyWithRelease('$e');
             }
             BluetoothController.to.sendKeyWithRelease('ENTER');
           });
         } else {
-          GetNotification.showSnackbar(
+          GetNotification.showCustomSnackbar(
             'Bluetooth disconnected',
             'Check Mac address and Bluetooth devices',
             tipsIcon: FontAwesomeIcons.bluetooth,
-            tipsIconColor: ColorPalette.red,
+            tipsIconColor: AppThemeStyle.red,
           );
         }
       } else {
-        GetNotification.showSnackbar(
+        GetNotification.showCustomSnackbar(
           'Face Unlock',
           'Please set lockScreen password',
           tipsIcon: FontAwesomeIcons.key,
-          tipsIconColor: ColorPalette.grey,
+          tipsIconColor: AppThemeStyle.clearGrey,
         );
       }
     }
@@ -160,22 +154,25 @@ class FaceVerificationController extends GetxController {
         reverseAnimationCurve: const Threshold(0),
         overlayBlur: 10,
         isDismissible: false,
-        titleText: const Align(
-          alignment: Alignment.topCenter,
-          child: Text(
-            "Face recognition in progress ...",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+        titleText: SizedBox(
+          height: Get.context!.height - 100,
+          child: Column(
+            children: [
+              Text(
+                "Face recognition in progress ...",
+                style: TextStyle(
+                  color: AppThemeStyle.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ).marginOnly(bottom: 15),
+              SpinKitDoubleBounce(
+                color: ColorUtil.hex("#3fd4f6"),
+                duration: const Duration(seconds: 3),
+                size: 50,
+              ),
+            ],
           ),
-        ).marginOnly(bottom: 15, top: 30),
-        messageText: Center(
-          child: SpinKitDoubleBounce(
-            color: ColorUtil.hex("#3fd4f6"),
-            duration: const Duration(seconds: 3),
-            size: 50,
-          ),
-        ),
+        ).marginOnly(top: 30),
 
         /// sanckbar状态监听
         snackbarStatus: (status) {
@@ -191,4 +188,55 @@ class FaceVerificationController extends GetxController {
       );
     }
   }
+
+  /// 显示识别结果通知
+  void showResult(FaceVerificationResult result) {
+    Map tips = {
+      0: [
+        // FontAwesomeIcons.solidFaceGrin,
+        FontAwesomeIcons.solidFaceGrinTongueSquint,
+        "Unlock !",
+        AppThemeStyle.green,
+      ],
+      1: [
+        FontAwesomeIcons.solidFaceMeh,
+        "Who are you ?",
+        AppThemeStyle.red,
+      ],
+      2: [
+        FontAwesomeIcons.solidFaceMehBlank,
+        "No Face !",
+        AppThemeStyle.clearGrey
+      ],
+    };
+
+    GetNotification.showCustomSnackbar(
+      "",
+      "",
+      maxWidth: 150,
+      borderRadius: 40,
+      padding: const EdgeInsets.all(25),
+      titleWidget: SizedBox(
+        width: 180,
+        child: Center(
+          child: FaIcon(
+            tips[result.index][0],
+            size: 70,
+            color: tips[result.index][2],
+          ),
+        ),
+      ),
+      messageWidget: Center(
+        child: Text(
+          tips[result.index][1],
+          style: Theme.of(Get.context!)
+              .textTheme
+              .caption!
+              .copyWith(color: tips[result.index][2]),
+        ),
+      ),
+    );
+  }
 }
+
+enum FaceVerificationResult { success, failure, noFace }

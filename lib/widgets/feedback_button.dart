@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:get/get.dart';
@@ -42,7 +40,7 @@ class FeedbackButton extends StatelessWidget {
               onTapUp!(_);
             }
             if (enableVibrate) {
-              Vibrate.feedback(FeedbackType.success);
+              Vibrate.feedback(FeedbackType.medium);
             }
           },
           onTapDown: onTapDown,

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/hide_camera_controller.dart';
 import 'package:get/get.dart';
@@ -50,6 +48,5 @@ class FacialExpressionController extends GetxController {
     // 关闭相机, 释放资源
     HideCameraController.to.cameraEngine.release();
     BluetoothController.to.sendKeyRelease();
-    log('colse');
   }
 }

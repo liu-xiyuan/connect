@@ -1,11 +1,12 @@
 import 'package:connect/controller/home_controller.dart';
+import 'package:connect/controller/lab/shutdown_controller.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
-import 'package:connect/style/color_palette.dart';
-import 'package:connect/widgets/app_page_appbar.dart';
+import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/feedback_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:tcp_client_dart/tcp_client_dart.dart';
@@ -18,7 +19,7 @@ class HomePageAppbar extends GetView<HomeController> {
     Get.put(HomeController());
     return Obx(
       () => SafeArea(
-        child: AppPageAppbar(
+        child: HomeAppbar(
           leading: SizedBox(
             width: 250,
             height: 25,
@@ -27,12 +28,16 @@ class HomePageAppbar extends GetView<HomeController> {
               children: [
                 StatusTag(
                   tagTitle: "TCP",
-                  onTap: () => TcpServiceController.to.connectToPCserver(),
+                  onTap: () => TcpServiceController.to.connect(),
+                  onLongPress: () {
+                    Vibrate.feedback(FeedbackType.success); // 震动提示
+                    TcpServiceController.to.showEditSheet(isSavedConnect: true);
+                  },
                   leading: SpinKitDoubleBounce(
                     color: TcpServiceController.to.tcpSocketState.value ==
                             TcpConnectionState.connected
-                        ? ColorPalette.green
-                        : Colors.red,
+                        ? AppThemeStyle.green
+                        : AppThemeStyle.red,
                     duration: const Duration(seconds: 3),
                     size: 8,
                   ).marginOnly(right: 5),
@@ -40,84 +45,37 @@ class HomePageAppbar extends GetView<HomeController> {
                 StatusTag(
                   tagTitle: "Blue",
                   onTap: () => BluetoothController.to.connect(),
+                  onLongPress: () {
+                    Vibrate.feedback(FeedbackType.success); // 震动提示
+                    BluetoothController.to.showEditSheet(isSavedConnect: true);
+                  },
                   leading: SpinKitDoubleBounce(
                     color: BluetoothController.to.isConnected.value
-                        ? ColorPalette.green
-                        : Colors.red,
+                        ? AppThemeStyle.green
+                        : AppThemeStyle.red,
                     duration: const Duration(seconds: 5),
                     size: 8,
                   ).marginOnly(right: 5),
                 ),
-                // StatusTag(
-                //   onTap: () {
-                //     GetNotification.showToast(message: 'Already in Touch Mode');
-                //   },
-                //   tagTitle: "Touch Mode",
-                //   backgroundColor: ColorPalette.green.withOpacity(.1),
-                // ),
+                Visibility(
+                  visible: ShutdownController.to.isTiming.value,
+                  child: StatusTag(
+                    tagTitle:
+                        "${ShutdownController.to.shutdownData.value.hour.toString().padLeft(2, '0')} : ${ShutdownController.to.shutdownData.value.minute.toString().padLeft(2, '0')}",
+                    onTap: () {
+                      ShutdownController.to.cancelShutdown();
+                    },
+                    leading: FaIcon(
+                      FontAwesomeIcons.clockRotateLeft,
+                      color: AppThemeStyle.white,
+                      size: 8,
+                    ).marginOnly(right: 5),
+                    backgroundColor: AppThemeStyle.darkGrey,
+                  ),
+                ),
               ],
             ),
           ),
-          actions: [
-            // 弹出式菜单
-            PopupMenuButton(
-              icon: const Center(
-                // child: FaIcon(FontAwesomeIcons.ellipsisVertical),
-                child: FaIcon(FontAwesomeIcons.ellipsis),
-              ),
-              offset: const Offset(0, 40),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15), // 边框圆角
-              ),
-              color: Colors.white.withOpacity(.3),
-              tooltip: '', // 取消长按提示
-
-              itemBuilder: (_) {
-                return <PopupMenuEntry<String>>[
-                  PopupMenuItem(
-                    value: 'settings',
-                    textStyle: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(fontWeight: FontWeight.bold),
-                    child: const Text('Settings'),
-                  ),
-                  PopupMenuItem(
-                    value: 'toolbox',
-                    textStyle: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(fontWeight: FontWeight.bold),
-                    child: const Text('Toolbox'),
-                  ),
-                  PopupMenuItem(
-                    value: 'about',
-                    textStyle: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(fontWeight: FontWeight.bold),
-                    child: const Text('About'),
-                  ),
-                ];
-              },
-              onSelected: (value) {
-                switch (value) {
-                  case 'settings':
-                    Get.toNamed('/settings');
-                    break;
-                  case 'toolbox':
-                    controller.showToolboxBar();
-                    break;
-                  case 'about':
-                    Get.toNamed('/about');
-                    break;
-                  default:
-                }
-              },
-              onCanceled: () {},
-            ),
-          ],
         ),
       ),
     );
@@ -131,10 +89,12 @@ class StatusTag extends StatelessWidget {
     required this.onTap,
     required this.tagTitle,
     this.leading = const SizedBox(),
-    this.backgroundColor = Colors.white54,
+    this.backgroundColor = Colors.transparent,
+    this.onLongPress,
   }) : super(key: key);
 
   final Function() onTap;
+  final Function()? onLongPress;
   final Widget leading;
   final String tagTitle;
   final Color backgroundColor;
@@ -143,6 +103,7 @@ class StatusTag extends StatelessWidget {
   Widget build(BuildContext context) {
     return FeedbackButton(
       onTap: onTap,
+      onLongPress: onLongPress,
       enableVibrate: true,
       child: Container(
         height: 25,
@@ -155,15 +116,66 @@ class StatusTag extends StatelessWidget {
             leading,
             Text(
               tagTitle,
-              style: const TextStyle(
-                fontSize: 10,
-                height: 1.1,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.subtitle2,
+              textAlign: TextAlign.center,
             ),
           ],
         ).paddingSymmetric(horizontal: 10),
       ),
-    ).marginOnly(right: 10);
+    );
+  }
+}
+
+class HomeAppbar extends StatelessWidget {
+  const HomeAppbar({
+    Key? key,
+    this.leading,
+    this.title,
+    this.actions,
+    this.isShowLeading = true,
+  }) : super(key: key);
+
+  final String? title;
+  final Widget? leading;
+  final List<Widget>? actions;
+  final bool isShowLeading;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // leading
+          Visibility(
+            visible: isShowLeading,
+            child: leading ??
+                IconButton(
+                  onPressed: () => Get.back(),
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                ),
+          ),
+          const Expanded(child: SizedBox(width: double.infinity)), // 撑开组件
+          // title
+          Center(
+            child: Text(
+              title ?? '',
+              style: Theme.of(context).textTheme.headline2,
+            ),
+          ),
+          const Expanded(child: SizedBox(width: double.infinity)),
+          // actions
+          Align(
+            alignment: Alignment.centerRight,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: actions ?? [],
+            ),
+          ),
+        ],
+      ).paddingSymmetric(horizontal: 25),
+    );
   }
 }

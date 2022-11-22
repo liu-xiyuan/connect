@@ -1,4 +1,4 @@
-import 'package:connect/style/color_palette.dart';
+import 'package:connect/style/app_theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -14,6 +14,7 @@ class AppPageTemplate extends StatelessWidget {
     this.pageTitle,
     required this.child,
     this.flootTitle,
+    this.leading,
   }) : super(key: key);
   final String appBarTitle;
   final List<Widget> appBarActions;
@@ -21,16 +22,21 @@ class AppPageTemplate extends StatelessWidget {
   final String? subPageTitle;
   final Widget child;
   final String? flootTitle;
+  final Widget? leading;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.angleLeft),
-          onPressed: () => Get.back(),
-        ).marginOnly(left: 10),
+        leading: leading ??
+            IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.angleLeft,
+                color: AppThemeStyle.white,
+              ),
+              onPressed: () => Get.back(),
+            ).marginOnly(left: 10),
         title: Text(appBarTitle),
         actions: appBarActions,
       ),
@@ -44,11 +50,7 @@ class AppPageTemplate extends StatelessWidget {
                 ? const SizedBox()
                 : Text(
                     pageTitle!,
-                    style: const TextStyle(
-                      fontSize: 30,
-                      height: 1.1,
-                      color: Colors.black,
-                    ),
+                    style: Theme.of(context).textTheme.headline1,
                   ).marginSymmetric(vertical: 10),
             //页面副标题
             subPageTitle == null
@@ -56,7 +58,7 @@ class AppPageTemplate extends StatelessWidget {
                 : Text(
                     subPageTitle!,
                     style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: ColorPalette.grey,
+                          color: AppThemeStyle.clearGrey,
                           fontWeight: FontWeight.normal,
                           fontSize: 14,
                         ),
@@ -66,8 +68,7 @@ class AppPageTemplate extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 flootTitle ?? '',
-                style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                      fontSize: 10,
+                style: Theme.of(context).textTheme.subtitle2?.copyWith(
                       fontWeight: FontWeight.normal,
                     ),
               ),

@@ -1,12 +1,17 @@
 import socket
 import threading
+import keyboard
 import TcpRecvDataManager
+from KeyboardListener import KeyboardListener
 
 
 class TcpServer:
 
-    def start_tcpserver(self):
+    def __init__(self):
         # 创建套接字
+        self.tcpServerSocket = None
+
+    def start_tcpserver(self):
         self.tcpServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # 设置地址可复用
         self.tcpServerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
@@ -19,8 +24,13 @@ class TcpServer:
 
         while True:
             new_client_socket, ip_port = self.tcpServerSocket.accept()
+
+            # 删除之前所有的键盘监听hook
+            keyboard.unhook_all()
+
             print("新连接: ", ip_port)
             new_thread = threading.Thread(target=self.connected_listener, args=(new_client_socket, ip_port))
+
             # 设置守护线程：在主线程关闭的时候 子线程也会关闭
             new_thread.setDaemon(True)
             new_thread.start()
@@ -33,8 +43,12 @@ class TcpServer:
         :param ip_port: ip地址元祖
         :return:
         """
+        keyboardListener = KeyboardListener(new_client_socket)
+        keyboardListener.listen_keyboard()
+
         while True:
             recv_data = new_client_socket.recv(1024)
+
             # 判断是否有消息返回
             if recv_data:
                 recv_text = recv_data.decode("utf8")
@@ -51,12 +65,14 @@ class TcpServer:
 
     #  获取本机的IP地址
     def get_host_ip(self) -> str:
+
         # 利用了UDP协议, 通过把自身ip放入该协议头中, 再通过读取UDP包获取ip.
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect(("8.8.8.8", 80))
             ip = s.getsockname()[0]
-        finally:
             s.close()
             print("当前服务端ip地址:%s" % ip)
             return ip
+        finally:
+            print()

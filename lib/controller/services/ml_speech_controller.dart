@@ -10,9 +10,9 @@ import 'package:huawei_ml_language/huawei_ml_language.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siri_wave/siri_wave.dart';
 
-/// 自动语音识别
-class SpeechRecognitionController extends GetxController {
-  static SpeechRecognitionController get to => Get.find();
+/// 语音识别服务
+class MlSpeechController extends GetxController {
+  static MlSpeechController get to => Get.find();
 
   /// 语音波形控制器
   final siriWaveControlle = SiriWaveController();
@@ -24,7 +24,7 @@ class SpeechRecognitionController extends GetxController {
 
   MLAsrRecognizer recognizer = MLAsrRecognizer();
 
-  var recognizerStatus = SpeechRecognizerStatus.running.obs;
+  var recognizerStatus = SpeechStatus.running.obs;
 
   late SharedPreferences prefs;
 
@@ -67,7 +67,7 @@ class SpeechRecognitionController extends GetxController {
     // 每次使用语音识别前调用一次, 防止出现未设置key的BUG
     setApiKey();
 
-    recognizerStatus.value = SpeechRecognizerStatus.running;
+    recognizerStatus.value = SpeechStatus.running;
 
     /// 当录音机开始接收语音时被调用。
     void onStartListening() {
@@ -86,7 +86,7 @@ class SpeechRecognitionController extends GetxController {
 
     // 最终识别结果
     void onResults(String result) {
-      if (recognizerStatus.value == SpeechRecognizerStatus.running) {
+      if (recognizerStatus.value == SpeechStatus.running) {
         if (result != '') {
           speechText.value = result;
         } else {
@@ -200,10 +200,10 @@ class SpeechRecognitionController extends GetxController {
   /// 停止语音识别
   void stopSpeechRecognition() {
     // 识别结束后销毁识别器
-    if (recognizerStatus.value != SpeechRecognizerStatus.closed) {
+    if (recognizerStatus.value != SpeechStatus.closed) {
       recognizer.destroy();
     }
-    recognizerStatus.value = SpeechRecognizerStatus.closed;
+    recognizerStatus.value = SpeechStatus.closed;
     log('SpeechRecognitionStop');
   }
 
@@ -215,4 +215,4 @@ class SpeechRecognitionController extends GetxController {
 }
 
 // 语音识别器状态
-enum SpeechRecognizerStatus { closed, running }
+enum SpeechStatus { closed, running }

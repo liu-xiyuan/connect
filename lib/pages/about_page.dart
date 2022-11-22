@@ -1,5 +1,6 @@
 import 'package:connect/common/color_util.dart';
 import 'package:connect/controller/about_controller.dart';
+import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/app_page_template.dart';
 import 'package:connect/widgets/feedback_button.dart';
 import 'package:flutter/material.dart';
@@ -28,14 +29,14 @@ class AboutPage extends GetView<AboutController> {
                 width: 20,
                 child: FaIcon(
                   icon,
-                  color: Colors.black,
+                  color: AppThemeStyle.white,
                   size: 20,
                 ),
               ).marginOnly(right: 10),
               Text(
                 title,
-                style: const TextStyle(
-                  color: Colors.black,
+                style: TextStyle(
+                  color: AppThemeStyle.white,
                 ),
               ),
             ],
@@ -57,7 +58,7 @@ class AboutPage extends GetView<AboutController> {
             Text(
               controller.appName.value,
               style:
-                  Theme.of(context).textTheme.headline2?.copyWith(fontSize: 50),
+                  Theme.of(context).textTheme.headline1?.copyWith(fontSize: 50),
             ).marginSymmetric(vertical: 5),
 
             Column(
@@ -66,15 +67,15 @@ class AboutPage extends GetView<AboutController> {
                 // 版本信息
                 Text(
                   'v${controller.version.value}',
-                  style: const TextStyle(color: Colors.black),
+                  style: Theme.of(context).textTheme.caption,
                 ).marginOnly(bottom: 5),
                 // 介绍
-                const Text(
+                Text(
                   'Flutter based computer peripheral app',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.grey,
-                  ),
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                        color: AppThemeStyle.clearGrey,
+                        fontWeight: FontWeight.normal,
+                      ),
                 ).marginOnly(bottom: 30),
                 // 链接
                 inkBar(
@@ -106,13 +107,14 @@ class AboutPage extends GetView<AboutController> {
                       : FontAwesomeIcons.apple,
                   color: GetPlatform.isAndroid
                       ? ColorUtil.hex("#00df7c")
-                      : Colors.black,
+                      : AppThemeStyle.white,
                 ).marginOnly(right: 10),
                 Text(
                   GetPlatform.isAndroid ? 'android' : 'iOS',
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w500,
                     fontSize: 22,
+                    color: AppThemeStyle.white,
                     height: GetPlatform.isAndroid ? null : 1.8,
                   ),
                 ),

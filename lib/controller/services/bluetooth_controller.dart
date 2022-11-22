@@ -1,7 +1,10 @@
 import 'dart:developer';
 
 import 'package:connect/common/get_notification.dart';
-import 'package:connect/style/color_palette.dart';
+import 'package:connect/controller/text_field_controller.dart';
+import 'package:connect/style/app_theme_style.dart';
+import 'package:connect/widgets/app_text_field.dart';
+
 import 'package:connect/widgets/media_controller_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +20,8 @@ class BluetoothController extends GetxController {
   // 与Android通信的信道名称
   static const MethodChannel _androidChannel =
       MethodChannel("android.flutter/Bluetooth");
+
+  RxString macAddress = ''.obs;
 
   var isConnected = false.obs; // 蓝牙是否已连接
   var isHidDevice = false.obs; // 是否注册为蓝牙HID设备
@@ -49,27 +54,59 @@ class BluetoothController extends GetxController {
 
   /// 将App注册成HID设备
   void initHidDevice() async {
+    macAddress.value = prefs.getString('mac') ?? '34:7D:F6:56:C1:5F';
     if (!isHidDevice.value) {
       try {
         await _androidChannel.invokeMethod("initHidDevice");
       } catch (e) {
-        GetNotification.showSnackbar(
+        GetNotification.showCustomSnackbar(
           'Bluetooth HID',
           'Device doesn\'t support Bluetooth HID',
           tipsIcon: FontAwesomeIcons.solidCircleXmark,
-          tipsIconColor: ColorPalette.red,
+          tipsIconColor: AppThemeStyle.red,
         );
         log('InitHidDevice faild: [$e]');
       }
     }
   }
 
+  /// 更新MAC地址
+  void updateMacAddress() async {
+    macAddress.value = TextFieldController.to.editController.text;
+
+    await prefs.setString('mac', macAddress.value);
+  }
+
+  /// 显示MAC地址编辑框
+  void showEditSheet({
+    bool isSavedConnect = false, // 是否保存并连接
+  }) {
+    GetNotification.showCustomBottomSheet(
+      title: 'Set MAC address',
+      confirmTitle: isSavedConnect ? "save & connect" : "save",
+      confirmBorderColor: AppThemeStyle.white,
+      confirmOnTap: () {
+        updateMacAddress();
+        Get.back();
+        if (isSavedConnect) {
+          connect();
+        }
+      },
+      cancelOnTap: () => Get.back(),
+      children: [
+        AppTextField(
+          initText: macAddress.value,
+          hintText: 'Input: 35:7G:F4:77:C2:9F',
+        ).marginSymmetric(vertical: 20),
+      ],
+    );
+  }
+
   /// 通过蓝牙与电脑连接
   void connect() async {
-    String macAddress = prefs.getString('mac') ?? "34:7D:F6:56:C1:5F";
     if (isHidDevice.value && !isConnected.value) {
       try {
-        await _androidChannel.invokeMethod("connect", macAddress);
+        await _androidChannel.invokeMethod("connect", macAddress.value);
       } catch (e) {
         log('Bluetooth connect faild: [$e]');
       }
@@ -81,11 +118,11 @@ class BluetoothController extends GetxController {
   /// 检查蓝牙是否连接
   bool checkBluetooth() {
     if (!isConnected.value) {
-      GetNotification.showSnackbar(
+      GetNotification.showCustomSnackbar(
         'Bluetooth disconnected',
         'Check Mac address and Bluetooth devices',
         tipsIcon: FontAwesomeIcons.bluetooth,
-        tipsIconColor: ColorPalette.red,
+        tipsIconColor: AppThemeStyle.red,
       );
     }
     return isConnected.value;
@@ -130,8 +167,8 @@ class BluetoothController extends GetxController {
       enableDrag: false,
       barrierColor: Colors.transparent,
       isScrollControlled: true,
-      enterBottomSheetDuration: const Duration(),
-      exitBottomSheetDuration: const Duration(),
+      enterBottomSheetDuration: const Duration(milliseconds: 150),
+      exitBottomSheetDuration: const Duration(milliseconds: 150),
     );
   }
 
@@ -142,7 +179,7 @@ class BluetoothController extends GetxController {
     //     'Bluetooth disconnected',
     //     'Check Mac address and Bluetooth devices',
     //     tipsIcon: FontAwesomeIcons.bluetooth,
-    //     tipsIconColor: ColorPalette.red,
+    //     tipsIconColor: AppThemeStyle.red,
     //     isCleanQueue: false,
     //   );
     // }

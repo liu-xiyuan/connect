@@ -1,4 +1,6 @@
+import 'package:connect/style/app_theme_style.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 /// BottomSheet外框样式
 class AppBottomSheetBox extends StatelessWidget {
@@ -12,9 +14,11 @@ class AppBottomSheetBox extends StatelessWidget {
     this.padding,
     this.margin,
     this.backgroundColor,
+    this.width,
   }) : super(key: key);
 
   final List<Widget> children;
+  final double? width;
   final List<BoxShadow>? boxShadow;
   final Axis direction;
   final CrossAxisAlignment crossAxisAlignment;
@@ -25,12 +29,22 @@ class AppBottomSheetBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    EdgeInsets safeMargin;
+
+    if (context.width > context.height) {
+      double width = (context.width - context.height) / 2 + 30;
+      safeMargin = EdgeInsets.fromLTRB(width, 0, width, 20);
+    } else {
+      safeMargin = const EdgeInsets.fromLTRB(30, 0, 30, 20);
+    }
+
     return Container(
-      padding: padding ?? const EdgeInsets.fromLTRB(25, 30, 25, 20),
-      margin: margin ?? const EdgeInsets.fromLTRB(30, 0, 30, 25),
+      padding: padding ?? const EdgeInsets.fromLTRB(20, 35, 20, 15),
+      margin: margin ?? safeMargin,
+      width: width,
       decoration: BoxDecoration(
-        color: backgroundColor ?? Colors.white,
-        borderRadius: const BorderRadius.all(Radius.circular(30)),
+        color: backgroundColor ?? AppThemeStyle.darkGrey,
+        borderRadius: const BorderRadius.all(Radius.circular(40)),
         boxShadow: boxShadow ?? [],
       ),
       child: Flex(

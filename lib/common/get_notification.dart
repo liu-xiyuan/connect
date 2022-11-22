@@ -1,3 +1,4 @@
+import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/app_bottomsheet_box.dart';
 import 'package:connect/widgets/feedback_button.dart';
 import 'package:flutter/material.dart';
@@ -43,24 +44,37 @@ class GetNotification {
         ),
         child: Text(
           message,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
-            color: Colors.black,
+            color: AppThemeStyle.white,
           ),
         ),
       ),
     );
   }
 
-  /// 显示Snackbar基本通知
-  static void showSnackbar(
+  /// 显示自定义的Snackbar通知
+  static void showCustomSnackbar(
     String title,
     String message, {
+    Widget? titleWidget,
+    Widget? messageWidget,
+    Widget? icon,
     IconData? tipsIcon,
     Color? tipsIconColor,
+    Color? backgroundColor,
     double? tipsIconSize,
-    SnackbarDuration duration = SnackbarDuration.short,
-    bool isCleanQueue = true, // 是否关闭队列中的Snackbar
+    double maxWidth = 350, // 最大宽度
+    EdgeInsets? padding,
+    double? borderRadius,
+    Duration duration = const Duration(seconds: 4),
+    Duration animationDuration = const Duration(milliseconds: 1250),
+    bool isDismissible = true, // 是否开启手势关闭
+    DismissDirection dismissDirection = DismissDirection.up, // Snackbar关闭方向
+    bool isCleanQueue = true, // 显示时是否关闭队列中的Snackbar
+    Curve? animationCurve, // 弹出和消失动画
+    Function(GetSnackBar)? onTap,
+    Function(SnackbarStatus?)? snackbarStatus, // 通知状态监听
   }) {
     if (isCleanQueue) {
       Get.closeCurrentSnackbar();
@@ -69,36 +83,49 @@ class GetNotification {
     Get.snackbar(
       title,
       message,
-      duration: duration == SnackbarDuration.short
-          ? const Duration(seconds: 3)
-          : const Duration(milliseconds: 4000),
-      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-      backgroundColor: Colors.grey.withOpacity(.1),
-      isDismissible: false,
-      onTap: (_) => Get.closeCurrentSnackbar(),
-      snackbarStatus: (status) async {
-        switch (status) {
-          case SnackbarStatus.OPENING:
-            // 播放音频
-            FlutterRingtonePlayer.play(
-              fromAsset: "assets/audios/notification_fresh.ogg",
-            );
-            break;
-          case SnackbarStatus.CLOSED:
-            // 关闭音频
-            FlutterRingtonePlayer.stop();
-            break;
-          default:
-        }
-      },
-      mainButton: TextButton(
-        onPressed: null,
-        child: FaIcon(
-          tipsIcon,
-          color: tipsIconColor ?? Colors.black,
-          size: tipsIconSize ?? 25,
-        ),
-      ),
+      titleText: titleWidget,
+      messageText: messageWidget,
+      icon: icon,
+      duration: duration,
+      dismissDirection: dismissDirection,
+      margin: const EdgeInsets.only(top: 20),
+      animationDuration: animationDuration,
+      forwardAnimationCurve: animationCurve,
+      reverseAnimationCurve: animationCurve,
+      padding: padding,
+      backgroundColor:
+          backgroundColor ?? AppThemeStyle.darkGrey.withOpacity(.7),
+      isDismissible: isDismissible,
+      maxWidth: maxWidth,
+      borderRadius: borderRadius,
+      colorText: AppThemeStyle.white,
+      onTap: onTap,
+      mainButton: tipsIcon != null
+          ? TextButton(
+              onPressed: null,
+              child: FaIcon(
+                tipsIcon,
+                color: tipsIconColor ?? AppThemeStyle.white,
+                size: tipsIconSize ?? 25,
+              ),
+            )
+          : null,
+      snackbarStatus: snackbarStatus ??
+          (status) async {
+            switch (status) {
+              case SnackbarStatus.OPENING:
+                // 播放音频
+                FlutterRingtonePlayer.play(
+                  fromAsset: "assets/audios/notification_fresh.ogg",
+                );
+                break;
+              case SnackbarStatus.CLOSED:
+                // 关闭音频
+                FlutterRingtonePlayer.stop();
+                break;
+              default:
+            }
+          },
     );
   }
 
@@ -114,15 +141,19 @@ class GetNotification {
     required Function() confirmOnTap,
 
     /// 取消按钮
+    Color? cancelBorderColor,
     Color? cancelTextColor,
     String? cancelTitle,
-    required Function() cancelOnTap,
+    Function()? cancelOnTap,
 
     /// 自定义组件
     List<Widget> children = const <Widget>[],
 
     /// 点击背景是否可以关闭
     bool? isDismissble,
+
+    /// 是否可以滑动关闭
+    bool? enableDrag,
   }) {
     return Get.bottomSheet(
       AppBottomSheetBox(
@@ -131,17 +162,17 @@ class GetNotification {
           Text(
             title,
             style: Theme.of(Get.context!).textTheme.bodyText1,
-          ).marginOnly(bottom: 15),
+          ),
           // 内容
           Visibility(
             visible: message == null ? false : true,
             child: Text(
               message ?? '',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[400],
-              ),
-            ),
+              style: Theme.of(Get.context!)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(fontWeight: FontWeight.normal),
+            ).marginOnly(top: 15),
           ),
           // 自定义组件
           Visibility(
@@ -149,54 +180,57 @@ class GetNotification {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: children,
-            ),
+            ).marginSymmetric(vertical: 25),
           ),
 
           // 确认按钮
           FeedbackButton(
             onTap: confirmOnTap,
             child: Container(
-              width: 175,
+              width: 180,
               height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
                 border: Border.all(
-                  color: confirmBorderColor ??
-                      Theme.of(Get.context!).toggleableActiveColor,
+                  color: confirmBorderColor ?? Colors.transparent,
                   width: 3,
                 ),
               ),
               child: Center(
                 child: Text(
-                  confirmTitle ?? 'confirm'.tr,
+                  confirmTitle ?? 'Confirm'.tr,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: confirmTextColor ??
-                        Theme.of(Get.context!).toggleableActiveColor,
-                    fontSize: 16,
-                    height: 1.1,
-                  ),
+                  style: Theme.of(Get.context!).textTheme.bodyText1!.copyWith(
+                        color: confirmTextColor ?? AppThemeStyle.white,
+                        fontWeight: FontWeight.normal,
+                      ),
                 ),
               ),
             ),
-          ).marginOnly(bottom: 5, top: 20),
+          ).marginOnly(bottom: 20),
 
           /// 取消按钮
           FeedbackButton(
-            onTap: cancelOnTap,
+            onTap: cancelOnTap ?? () => closeBottomSheet(),
             child: Container(
               width: 175,
               height: 50,
-              color: Colors.transparent,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(25),
+                border: Border.all(
+                  color: cancelBorderColor ?? Colors.transparent,
+                  width: 3,
+                ),
+              ),
               child: Center(
                 child: Text(
-                  cancelTitle ?? 'cancel'.tr,
+                  cancelTitle ?? 'Cancel'.tr,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: cancelTextColor ?? Colors.black,
-                    fontSize: 16,
-                    height: 1.1,
-                  ),
+                  style: Theme.of(Get.context!).textTheme.bodyText1!.copyWith(
+                        color: confirmTextColor ?? AppThemeStyle.white,
+                        fontWeight: FontWeight.normal,
+                      ),
                 ),
               ),
             ),
@@ -207,12 +241,7 @@ class GetNotification {
       isScrollControlled: true, // 是否支持全屏弹出
       barrierColor: Colors.black12,
       isDismissible: isDismissble ?? true,
+      enableDrag: enableDrag ?? true,
     );
   }
 }
-
-/// Snackbar的持续时间
-///
-/// [SnackbarDuration.short] : 显示持续3秒
-/// [SnackbarDuration.long] : 显示持续4秒
-enum SnackbarDuration { long, short }
