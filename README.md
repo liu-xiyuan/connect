@@ -2,7 +2,7 @@
 
 ![Screenshot_20221121_194755](docs/images/Screenshot_20221121_194755.jpg)
 
-[更多页面预览](https://github.com/liuxiyuan-2022/connect/docs/images/IMG_20221122_142515.jpg)
+[更多页面预览](https://raw.githubusercontent.com/liuxiyuan-2022/connect/main/docs/images/IMG_20221122_142515.jpg)
 
 **[温馨提示]**
 
