@@ -1,8 +1,8 @@
 # Connect
 
-![IMG_20220827_212155](https://gitee.com/liuxiyuan_2022/flutter_test/raw/master/lib/assets/imgs/202208272125829.jpg)
+![Screenshot_20221121_194755](docs/images/Screenshot_20221121_194755.jpg)
 
-
+[更多页面预览](https://github.com/liuxiyuan-2022/connect/docs/images/IMG_20221122_142515.jpg)
 
 **[温馨提示]**
 
@@ -98,7 +98,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 4. 将`connectServer.bat`文件复制到`C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp`目录下 : 
 
-	> 此步骤杀毒软件会阻止，选择允许，然后重启电脑即可
+	> 此步骤杀毒软件会阻止 选择允许，然后重启电脑即可运行程序
 
 5. Connect Server服务可以在**任务管理器**的**启动**中找到: `connectServer.bat`
 
@@ -110,14 +110,10 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 > 使用前请确保App正确设置 `IP Address` 和 `MAC Address`
 
-
-
 #### 1. 为什么手机端无法与电脑进行蓝牙配对?
 
 - 在手机端和电脑端，分别取消对应端的蓝牙配对，然后重启App等待自动配对
 - 若App无法自动配对, 尝试保持App位于前台, 在电脑端手动搜索手机进行蓝牙配对
-
-
 
 #### 2. 蓝牙配对成功但连接失败？
 
@@ -126,27 +122,35 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 - 检查App的`Settings`中的`MAC Address`是否正确
 - 尝试分别删除蓝牙设备, 并重启应用进行蓝牙配对连接
 
-> 推荐谷歌商店下载应用: [Bluetooth HID Profile Tester](https://play.google.com/store/apps/details?id=com.rdapps.bluetoothhidtester) 检测手机是否兼容蓝牙HID协议
-
-
+> 推荐从谷歌商店下载应用: [Bluetooth HID Profile Tester](https://play.google.com/store/apps/details?id=com.rdapps.bluetoothhidtester) 检测手机是否兼容蓝牙HID协议
 
 #### 3. 为什么App有些功能无法使用?
 
 大多数功能仅需使用TCP服务，部分功能需同时使用TCP和蓝牙服务确保你的两个服务都处于连接状态
 
-
-
-#### 4. 为什么App切后台, TCP连接就断开
+#### 4. 为什么App切后台, TCP连接就断开?
 
 在手机设置的电池管理中将App设为[允许后台高耗电]
 
-
-
 ### 手势操作
+
+> 2.0.0 版本移除并修改了部分手势操作
+
+- **左滑**——显示Tool页面
+
+- **长按并向下轻扫**——显示人脸解锁页面
+
+- **长按并向上轻扫**——显示语音识别页面
+
+### 翻译功能
+
+> 在 **AppGallery Connect** > **项目设置** > **项目配额** > **语音语言类** 中查看当月的翻译配额剩余量 (500,000 字符/月)
+
+只需要在电脑端**选中文本并按下`CTRL` + `C` `C`**，即可在手机端预览翻译内容并支持将翻译复制至电脑剪贴板
 
 
 
 ## 更新日志
 
-[点击查看](https://github.com/liuxiyuan-2022/connect/blob/main/CHANGELOG.md)
+[点击查看](./CHANGELOG.md)
 
