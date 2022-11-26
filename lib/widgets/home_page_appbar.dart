@@ -1,6 +1,7 @@
 import 'package:connect/controller/home_controller.dart';
 import 'package:connect/controller/lab/shutdown_controller.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
+import 'package:connect/controller/services/ml_awareness_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
 import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/feedback_button.dart';
@@ -76,6 +77,32 @@ class HomePageAppbar extends GetView<HomeController> {
               ],
             ),
           ),
+          actions: [
+            // 夜间
+            Visibility(
+              visible: MlAwarenessController.to.isNight.value,
+              child: FaIcon(
+                FontAwesomeIcons.solidMoon,
+                size: 12,
+                color: AppThemeStyle.white,
+              ).marginSymmetric(horizontal: 3),
+            ),
+            // 电池状态
+            FaIcon(
+              MlAwarenessController.to.batterLevelIcon.value,
+              size: 16,
+              color: MlAwarenessController.to.batterLevelColor.value,
+            ).marginSymmetric(horizontal: 3),
+            // 充电提示
+            Visibility(
+              visible: MlAwarenessController.to.isCharging.value,
+              child: FaIcon(
+                FontAwesomeIcons.bolt,
+                size: 8,
+                color: AppThemeStyle.green,
+              ),
+            ).marginSymmetric(horizontal: 2),
+          ],
         ),
       ),
     );
@@ -167,12 +194,9 @@ class HomeAppbar extends StatelessWidget {
           ),
           const Expanded(child: SizedBox(width: double.infinity)),
           // actions
-          Align(
-            alignment: Alignment.centerRight,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: actions ?? [],
-            ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: actions ?? [],
           ),
         ],
       ).paddingSymmetric(horizontal: 25),

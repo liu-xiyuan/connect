@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:connect/common/get_notification.dart';
 import 'package:connect/controller/services/ml_face_controller.dart';
 import 'package:connect/style/app_theme_style.dart';
@@ -23,9 +22,10 @@ class HideCameraController extends GetxController {
   RxInt debounceCount = 0.obs;
 
   /// 初始化相机
-  Future<void> initCameraEngine(
-      {required BodyTransaction bodyTransaction,
-      required void Function({dynamic result}) onTransaction}) async {
+  void initCameraEngine({
+    required BodyTransaction bodyTransaction,
+    required void Function({dynamic result}) onTransaction,
+  }) async {
     // 创建一个镜头控制器。
     final controller = MLBodyLensController(
       // 设置类型
@@ -48,8 +48,8 @@ class HideCameraController extends GetxController {
   }
 
   /// 启动相机 -人脸解锁
-  Future<void> openCamera() async {
-    await initCameraEngine(
+  Future<void> openFaceCamera() async {
+    initCameraEngine(
       bodyTransaction: BodyTransaction.skeleton, // face识别bug, 用skeleton(骨架)代替
       onTransaction: ({dynamic result}) {
         // 判断相机返回结果是否识别到面部
@@ -66,12 +66,6 @@ class HideCameraController extends GetxController {
     Future.delayed(const Duration(seconds: 5), () {
       if (debounceCount.value == 0) {
         cameraEngine.release();
-        // GetNotification.showCustomSnackbar(
-        //   'Face Unlock',
-        //   'No face is detected !',
-        //   tipsIcon: FontAwesomeIcons.solidFaceMehBlank,
-        //   tipsIconColor: ColorUtil.hex("#495057"),
-        // );
         MlFaceController.to.showResult(FaceVerificationResult.noFace);
       }
     });
@@ -90,26 +84,25 @@ class HideCameraController extends GetxController {
 
   /// 保存捕获的面部图片
   Future<bool> saveCameraImage() async {
-    try {
-      Uint8List imgUint8List = await cameraEngine.capture();
-      // 关闭相机
-      cameraEngine.release();
+    bool res = false;
+
+    await cameraEngine.capture().then((value) {
       // 将面部图片保存在本地
       File(MlFaceController.to.faceLocalPath).writeAsBytes(
-        imgUint8List,
+        value,
         mode: FileMode.write,
       );
-      return true;
-    } catch (e) {
+      res = true;
+    }, onError: (e) {
       GetNotification.showCustomSnackbar(
         'Face Unlock',
         'Face capture error, please try again.',
         tipsIcon: FontAwesomeIcons.camera,
         tipsIconColor: AppThemeStyle.red,
       );
-      cameraEngine.release();
       log(e.toString());
-      return false;
-    }
+      res = false;
+    }).whenComplete(() => cameraEngine.release());
+    return res;
   }
 }

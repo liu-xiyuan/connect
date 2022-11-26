@@ -15,14 +15,14 @@ class MlSpeechController extends GetxController {
   static MlSpeechController get to => Get.find();
 
   /// 语音波形控制器
-  final siriWaveControlle = SiriWaveController();
+  final siriWaveControlle = SiriWaveController(amplitude: 1, speed: .1);
 
   /// 语音识别转换的文字
   final speechText = ''.obs;
 
   String hmsApiKey = '';
 
-  MLAsrRecognizer recognizer = MLAsrRecognizer();
+  var recognizer = MLAsrRecognizer().obs;
 
   var recognizerStatus = SpeechStatus.running.obs;
 
@@ -42,8 +42,6 @@ class MlSpeechController extends GetxController {
     super.onInit();
     prefs = await SharedPreferences.getInstance();
     setApiKey();
-    siriWaveControlle.setAmplitude(1);
-    siriWaveControlle.setSpeed(.1);
   }
 
   /// 设置APP的HMS ML apiKey
@@ -110,8 +108,6 @@ class MlSpeechController extends GetxController {
     void onState(int state) {
       log('onState: $state');
       switch (state) {
-        case 1:
-          break;
         case 2:
           speechText.value = 'Sorry I didn\'t catch that.';
           break;
@@ -127,7 +123,7 @@ class MlSpeechController extends GetxController {
     }
 
     // 设置监听器来跟踪事件。
-    recognizer.setAsrListener(
+    recognizer.value.setAsrListener(
       MLAsrListener(
         onStartListening: onStartListening,
         onRecognizingResults: onRecognizingResults,
@@ -143,7 +139,7 @@ class MlSpeechController extends GetxController {
       language: MLAsrConstants.LAN_ZH_CN,
       feature: MLAsrConstants.FEATURE_WORDFLUX,
     );
-    recognizer.startRecognizing(setting);
+    recognizer.value.startRecognizing(setting);
   }
 
   /// 将语音识别文本通过TCP发送至电脑
@@ -201,7 +197,7 @@ class MlSpeechController extends GetxController {
   void stopSpeechRecognition() {
     // 识别结束后销毁识别器
     if (recognizerStatus.value != SpeechStatus.closed) {
-      recognizer.destroy();
+      recognizer.value.destroy();
     }
     recognizerStatus.value = SpeechStatus.closed;
     log('SpeechRecognitionStop');

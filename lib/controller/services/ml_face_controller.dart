@@ -20,6 +20,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MlFaceController extends GetxController {
   static MlFaceController get to => Get.find();
 
+  // 创建面部验证分析器。
+  final analyzer = MLFaceVerificationAnalyzer();
+
   /// 面部模板的本地路径 (手机图片存储路径)
   late String faceTemplateLocalPath;
 
@@ -33,10 +36,6 @@ class MlFaceController extends GetxController {
   void onInit() {
     super.onInit();
     initFaceTemplate();
-    HideCameraController.to.initCameraEngine(
-      bodyTransaction: BodyTransaction.skeleton, // face识别bug, 用skeleton(骨架)代替
-      onTransaction: ({dynamic result}) {},
-    );
   }
 
   /// 初始化面部模板
@@ -58,48 +57,40 @@ class MlFaceController extends GetxController {
 
   /// 面部识别
   ///
-  /// 该服务识别并提取模板中面部的关键特征，将特征与输入图像中的面部特征进行比较，然后根据相似度判断两张面部是否属于同一个人。
+  /// 该服务识别并提取模板中面部的关键特征，将特征与输入图像中的面部特征进行比较
+  /// 然后根据置信度判断两张面部是否属于同一个人。
   void startFaceVerification() async {
-    // 创建面部验证分析器。
-    final analyzer = MLFaceVerificationAnalyzer();
-
-    /// 面部对比相似度
+    /// 面部对比置信度
     double similarity = 0.0;
 
-    // // 为面部验证创建模板面部。
-    // ignore: unused_local_variable
-    List<MLFaceTemplateResult> templateResult =
-        await analyzer.setTemplateFace(faceTemplateLocalPath, 0);
+    /// 为面部验证创建模板面部。
+    analyzer.setTemplateFace(faceTemplateLocalPath, 0);
 
     // 根据模板面部同步进行面部验证。
-    List<MLFaceVerificationResult> results =
-        await analyzer.analyseFrame(faceLocalPath);
+    List results = await analyzer.analyseFrame(faceLocalPath);
 
-    // 验证后,停止分析器
-    bool analyzerStatus = await analyzer.stop();
-
-    /// 获取验证结果的面部对比相似度信息
+    /// 获取验证结果的面部对比置信度信息
     if (results.isNotEmpty) {
       similarity = results[0].similarity;
 
-      log('面部对比相似度: ${similarity.toStringAsFixed(3)}');
+      log('面部对比置信度: ${similarity.toStringAsFixed(3)}');
     }
 
-    if (analyzerStatus) {
-      // 相似度大于0.72则解锁成功
-      if (similarity > 0.72) {
-        // 检查电脑是否处于锁屏状态
-        TcpServiceController.to.sendData(
-          TcpCommands.otherAction,
-          OtherAction.checkLockScreen,
-        );
-
-        // 显示面部识别成功提示
-        showResult(FaceVerificationResult.success);
-      } else {
-        showResult(FaceVerificationResult.failure);
-      }
+    // 置信度大于0.72则解锁成功
+    if (similarity > 0.72) {
+      // 显示面部识别成功提示
+      showResult(FaceVerificationResult.success);
+      // 检查电脑是否处于锁屏状态
+      TcpServiceController.to.sendData(
+        TcpCommands.otherAction,
+        OtherAction.checkLockScreen,
+      );
+    } else {
+      showResult(FaceVerificationResult.failure);
     }
+
+    // 验证后,停止分析器
+    await analyzer.stop();
   }
 
   /// 解锁电脑
@@ -115,7 +106,7 @@ class MlFaceController extends GetxController {
           BluetoothController.to.sendKeyWithRelease('ESC');
 
           // 等待500ms后输入密码
-          Future.delayed(const Duration(milliseconds: 800), () {
+          Future.delayed(const Duration(milliseconds: 500), () {
             for (var e in pwdList) {
               BluetoothController.to.sendKeyWithRelease('$e');
             }
@@ -177,10 +168,8 @@ class MlFaceController extends GetxController {
         /// sanckbar状态监听
         snackbarStatus: (status) {
           switch (status) {
-            case SnackbarStatus.OPEN:
-              {
-                HideCameraController.to.openCamera();
-              }
+            case SnackbarStatus.OPENING:
+              HideCameraController.to.openFaceCamera();
               break;
             default:
           }
@@ -193,7 +182,6 @@ class MlFaceController extends GetxController {
   void showResult(FaceVerificationResult result) {
     Map tips = {
       0: [
-        // FontAwesomeIcons.solidFaceGrin,
         FontAwesomeIcons.solidFaceGrinTongueSquint,
         "Unlock !",
         AppThemeStyle.green,

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:connect/common/get_notification.dart';
 import 'package:connect/controller/lab/shutdown_controller.dart';
 import 'package:connect/controller/services/ml_face_controller.dart';
-import 'package:connect/controller/services/ml_translation_controller.dart';
+import 'package:connect/controller/services/ml_translator_controller.dart';
 import 'package:connect/controller/text_field_controller.dart';
 import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/app_text_field.dart';
@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tcp_client_dart/tcp_client_dart.dart';
 
+/// TCP服务
 class TcpServiceController extends GetxController {
   static TcpServiceController get to => Get.find();
 
@@ -194,7 +195,7 @@ class TcpServiceController extends GetxController {
       ShutdownController.to.listener(data);
     } else if (data.startsWith('Translate:')) {
       String source = data.split('Translate:')[1];
-      MlTranslatorController.to.showTranslate(source);
+      MlTranslatorController.to.showTextTranslate(source);
     }
     log('服务端消息:[$data]');
   }

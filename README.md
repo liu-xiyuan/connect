@@ -12,6 +12,16 @@
 
 
 
+## 功能
+
+- 人脸识别解锁电脑
+- 文本翻译、实时字幕
+- 语音输入
+- 媒体控制
+- 定时关机
+
+
+
 ## 安装
 
 > Connect 需要接入HMS Core服务，请阅读以下步骤自行打包为安卓apk或ios应用
@@ -22,9 +32,7 @@
 git clone https://github.com/liuxiyuan-2022/connect.git
 ```
 
-> 以下步骤需配置Flutter环境, 详细环境配置请参考[Flutter官方文档](https://docs.flutter.dev/get-started/install)
-
-
+> 以下步骤需配置Flutter环境和Python环境, Flutter详细环境配置请参考[Flutter官方文档](https://docs.flutter.dev/get-started/install)
 
 ### 配置Connect App端
 
@@ -32,14 +40,15 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 1. 在项目目录下执行命令, 安装项目所需依赖 :
 
-   ```bash
+   ```shell
    flutter pub get
    ```
 
 2. 接入HUAWEI HMS Core服务 :
 
-   - [快速开始](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-Guides/prepare-dev-env-0000001052511642)
-   - [API参考](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-References/overview-0000001052975193?ha_source=hms1)
+   - [配置ML Kit](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-Guides/prepare-dev-env-0000001052511642)
+   - [配置Awareness Kit](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-Guides/preparing-dev-environment-0000001073460239)
+   - API参考：[ML Kit API](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-References/overview-0000001052975193?ha_source=hms1) ， [Awareness Kit API](https://developer.huawei.com/consumer/en/doc/development/HMS-Plugin-Guides/cap-use-scenarios-0000001073722601)
    - [一些接入HMS Core 遇到的问题](https://github.com/liuxiyuan-2022/connect/blob/main/Flutter%203.0%20%E9%9B%86%E6%88%90%20HMS%20ML%20%E5%9D%91%E7%82%B9.md)
 
 
@@ -53,7 +62,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 5. 将项目打包为Android apk :
 
-   ```bash
+   ```sh
    flutter build apk
    ```
 
@@ -67,7 +76,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 1. 安装pyhook
 
-   - 访问[网址链接](https://www.lfd.uci.edu/~gohlke/pythonlibs/), 在搜索栏搜索`pyHook`, 下载对应文件`pyHook‑1.5.1‑cp37‑cp37m‑win_amd64.whl`并保存到本地
+   - 访问[网址链接](https://www.lfd.uci.edu/~gohlke/pythonlibs/), 在搜索栏搜索 **pyHook** , 下载对应文件 **pyHook‑1.5.1‑cp37‑cp37m‑win_amd64.whl** 并保存到本地
    - 在cmd中执行命令: `pip install D:\Download\pyHook-1.5.1-cp37-cp37m-win_amd64.whl(本地文件路径)`
 
 2. 安装其他python所需的第三方库
@@ -104,7 +113,39 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 
 
+## 设置
+
+**在运行App之前，请完成以下步骤 !**
+
+### HMS Core 设置
+
+- 前往手机应用商城下载 **HMS Core** 应用
+- 在 **设置** > **应用管理**  中找到 **HMS Core** 并授予相关权限：**定位**：**始终允许** | **身体活动：允许**
+
+### Connect 设置
+
+- 在 **设置**  > **应用管理** 中找到 **Connect** 并授予相关权限
+- 在 **电池** > **后台耗电管理** 中找到 **Connect** 并 **允许后台高耗电**
+
+ 
+
 ## 帮助
+
+### 手势操作
+
+> 2.0.0 版本移除并修改了部分手势操作
+
+- **左滑**——显示Tool页面
+
+- **长按并向下轻扫**——显示人脸解锁页面
+
+- **长按并向上轻扫**——显示语音识别页面
+
+### 翻译功能
+
+> 在 **AppGallery Connect** > **项目设置** > **项目配额** > **语音语言类** 中查看当月的翻译配额剩余量 (500,000 字符/月)
+
+只需要在电脑端**选中文本并按下`CTRL` + `C` `C`**，即可在手机端预览翻译内容并支持将翻译复制至电脑剪贴板
 
 ### 常见问题
 
@@ -131,22 +172,6 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 #### 4. 为什么App切后台, TCP连接就断开?
 
 在手机设置的电池管理中将App设为[允许后台高耗电]
-
-### 手势操作
-
-> 2.0.0 版本移除并修改了部分手势操作
-
-- **左滑**——显示Tool页面
-
-- **长按并向下轻扫**——显示人脸解锁页面
-
-- **长按并向上轻扫**——显示语音识别页面
-
-### 翻译功能
-
-> 在 **AppGallery Connect** > **项目设置** > **项目配额** > **语音语言类** 中查看当月的翻译配额剩余量 (500,000 字符/月)
-
-只需要在电脑端**选中文本并按下`CTRL` + `C` `C`**，即可在手机端预览翻译内容并支持将翻译复制至电脑剪贴板
 
 
 

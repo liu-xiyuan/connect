@@ -19,7 +19,7 @@ class FacialExpressionController extends GetxController {
 
   /// 开始识别面部表情
   void start() async {
-    await HideCameraController.to.initCameraEngine(
+    HideCameraController.to.initCameraEngine(
       bodyTransaction: BodyTransaction.face,
       onTransaction: ({dynamic result}) {
         // 监听相机返回的面部信息结果
