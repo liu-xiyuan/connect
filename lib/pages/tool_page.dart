@@ -2,6 +2,7 @@ import 'package:connect/common/color_util.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/ml_face_controller.dart';
 import 'package:connect/controller/services/ml_speech_controller.dart';
+import 'package:connect/controller/services/ml_translator_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
 import 'package:connect/controller/tool_controller.dart';
 import 'package:connect/style/app_theme_style.dart';
@@ -26,7 +27,7 @@ class ToolPage extends GetView<ToolController> {
         child: GridView(
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            childAspectRatio: 1.3,
+            childAspectRatio: 1.2,
             crossAxisCount: 5,
             crossAxisSpacing: 70,
             mainAxisSpacing: 70,
@@ -69,6 +70,14 @@ class ToolPage extends GetView<ToolController> {
               iconColor: ColorUtil.hex("#39ceab"),
             ),
 
+            // 实时翻译
+            ToolItem(
+              onTap: () => MlTranslatorController.to.showRealTimeTranslate(),
+              title: 'Translator',
+              icon: FontAwesomeIcons.solidClosedCaptioning,
+              iconColor: ColorUtil.hex("#fec441"),
+            ),
+
             // 实验室
             ToolItem(
               onTap: () {
@@ -77,14 +86,6 @@ class ToolPage extends GetView<ToolController> {
               title: 'Laboratory',
               icon: FontAwesomeIcons.microscope,
               iconColor: ColorUtil.hex("#797dff"),
-            ),
-
-            // 手势识别
-            ToolItem(
-              onTap: () {},
-              title: 'Gesture',
-              icon: FontAwesomeIcons.handSparkles,
-              iconColor: ColorUtil.hex("#fec441"),
             ),
 
             // 媒体控制器

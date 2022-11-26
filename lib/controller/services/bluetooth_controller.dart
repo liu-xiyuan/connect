@@ -12,14 +12,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// 蓝牙服务
 class BluetoothController extends GetxController {
   static BluetoothController get to => Get.find();
 
-  late SharedPreferences prefs;
+  static const MethodChannel _c = MethodChannel("android.flutter/Bluetooth");
 
-  // 与Android通信的信道名称
-  static const MethodChannel _androidChannel =
-      MethodChannel("android.flutter/Bluetooth");
+  late SharedPreferences prefs;
 
   RxString macAddress = ''.obs;
 
@@ -36,7 +35,7 @@ class BluetoothController extends GetxController {
 
   /// 监听Android端发送的消息
   void initChannelListen() async {
-    _androidChannel.setMethodCallHandler((call) async {
+    _c.setMethodCallHandler((call) async {
       switch (call.method) {
         case 'blueStatusCall':
           blueStatusCall(call);
@@ -57,7 +56,7 @@ class BluetoothController extends GetxController {
     macAddress.value = prefs.getString('mac') ?? '34:7D:F6:56:C1:5F';
     if (!isHidDevice.value) {
       try {
-        await _androidChannel.invokeMethod("initHidDevice");
+        await _c.invokeMethod("initHidDevice");
       } catch (e) {
         GetNotification.showCustomSnackbar(
           'Bluetooth HID',
@@ -106,7 +105,7 @@ class BluetoothController extends GetxController {
   void connect() async {
     if (isHidDevice.value && !isConnected.value) {
       try {
-        await _androidChannel.invokeMethod("connect", macAddress.value);
+        await _c.invokeMethod("connect", macAddress.value);
       } catch (e) {
         log('Bluetooth connect faild: [$e]');
       }
@@ -132,28 +131,28 @@ class BluetoothController extends GetxController {
   /// [.sendKeyWithRelease("a")]
   Future sendKeyWithRelease(String key) async {
     if (checkBluetooth()) {
-      await _androidChannel.invokeMethod("sendKeyWithRelease", key);
+      await _c.invokeMethod("sendKeyWithRelease", key);
     }
   }
 
   /// 按下对应键
   Future sendKey(String key) async {
     if (checkBluetooth()) {
-      await _androidChannel.invokeMethod("sendKey", key);
+      await _c.invokeMethod("sendKey", key);
     }
   }
 
   /// 松开对应键
   Future sendKeyRelease() async {
     if (checkBluetooth()) {
-      await _androidChannel.invokeMethod("sendKeyRelease");
+      await _c.invokeMethod("sendKeyRelease");
     }
   }
 
   /// 蓝牙HID媒体控制
   Future mediaControl(MediaControl mediaControl) async {
     if (checkBluetooth()) {
-      await _androidChannel.invokeMethod(
+      await _c.invokeMethod(
         "mediaControl",
         mediaControl.toString(),
       );

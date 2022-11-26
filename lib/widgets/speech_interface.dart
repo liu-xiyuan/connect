@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:siri_wave/siri_wave.dart';
 
-/// 语音识别BottomSheet
-/// 使用: Get.bottomSheet(SpeechFaceInterface())
+/// 语音识别页面
+///
+/// 调用：Get.bottomSheet(SpeechFaceInterface())
 class SpeechFaceInterface extends GetView<MlSpeechController> {
   const SpeechFaceInterface({Key? key}) : super(key: key);
 
@@ -58,8 +59,8 @@ class SpeechFaceInterface extends GetView<MlSpeechController> {
               ),
 
               Container(
-                margin: const EdgeInsets.only(left: 35, bottom: 90),
-                padding: const EdgeInsets.only(top: 40, bottom: 20),
+                margin: const EdgeInsets.only(left: 35, right: 35, bottom: 90),
+                padding: const EdgeInsets.only(top: 20, bottom: 20),
                 color: Colors.transparent,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

@@ -38,20 +38,15 @@ class HomePage extends GetView<HomeController> {
             // onScaleUpdate: (e) => controller.onScaleUpdate(e),
             // onScaleEnd: (_) => controller.onScaleEnd(),
 
-            child: Stack(
-              alignment: AlignmentDirectional.topCenter,
-              children: [
-                // 内容
-                Container(
-                  height: context.height,
-                  width: context.width,
-                  color: Colors.transparent,
-                  child: const Center(
-                    child: SimpleDate(),
-                  ),
-                ),
-                const HomePageAppbar(),
-              ],
+            child: DecoratedBox(
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: Stack(
+                alignment: AlignmentDirectional.topCenter,
+                children: const [
+                  Center(child: SimpleDate()),
+                  HomePageAppbar(),
+                ],
+              ),
             ),
           ),
         ),

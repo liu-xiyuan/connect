@@ -198,6 +198,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "4.0.1"
+  huawei_awareness:
+    dependency: "direct main"
+    description:
+      name: huawei_awareness
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.1.0+302"
   huawei_ml_body:
     dependency: "direct main"
     description:
@@ -401,6 +408,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.2"
+  power:
+    dependency: "direct main"
+    description:
+      name: power
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.5.0"
   process:
     dependency: transitive
     description:
@@ -470,7 +484,7 @@ packages:
       name: siri_wave
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.1"
+    version: "0.2.2"
   sky_engine:
     dependency: transitive
     description: flutter

@@ -2,6 +2,7 @@ import 'package:connect/common/get_notification.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
 import 'package:connect/controller/settings_controller.dart';
+import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/app_page_template.dart';
 import 'package:connect/widgets/app_text_field.dart';
 import 'package:connect/widgets/settings_group.dart';
@@ -36,8 +37,7 @@ class SettingsPage extends GetView<SettingsController> {
                   onTap: () {
                     GetNotification.showCustomBottomSheet(
                       title: 'Set lock screen password',
-                      confirmTextColor: Colors.black,
-                      confirmBorderColor: Colors.black,
+                      confirmBorderColor: AppThemeStyle.white,
                       confirmOnTap: () {
                         controller.updateLockPassword();
                         Get.back();

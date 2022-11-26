@@ -3,9 +3,10 @@ import 'dart:developer';
 
 import 'package:connect/controller/lab/shutdown_controller.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
+import 'package:connect/controller/services/ml_awareness_controller.dart';
 import 'package:connect/controller/services/ml_face_controller.dart';
 import 'package:connect/controller/services/hide_camera_controller.dart';
-import 'package:connect/controller/services/ml_translation_controller.dart';
+import 'package:connect/controller/services/ml_translator_controller.dart';
 import 'package:connect/controller/services/permission_controller.dart';
 import 'package:connect/controller/services/ml_speech_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
@@ -38,6 +39,9 @@ class HomeController extends GetxController
   /// 上下滑动的偏移量
   var offestY = .0;
 
+  /// 时间更新计时器
+  Timer? dateTimer;
+
   var nowTime = "".obs;
 
   var nowDate = "".obs;
@@ -54,7 +58,7 @@ class HomeController extends GetxController
     "September",
     "October",
     "November",
-    "December"
+    "December",
   ];
   var weekList = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
@@ -62,7 +66,7 @@ class HomeController extends GetxController
   void onInit() {
     super.onInit();
     initControllers();
-    updateTime();
+    activeDateTimer();
     WidgetsBinding.instance.addObserver(this); // 监听应用程序生命周期状态
   }
 
@@ -72,9 +76,16 @@ class HomeController extends GetxController
     switch (state) {
       case AppLifecycleState.resumed:
         BluetoothController.to.initHidDevice();
+        activeDateTimer();
+        MlAwarenessController.to.activePowerTimer();
+        MlAwarenessController.to.activeWeatherTimer();
+
         log("App进入前台: $state");
         break;
       case AppLifecycleState.paused:
+        dateTimer?.cancel();
+        MlAwarenessController.to.cancelTimer();
+
         log("App进入后台: $state");
         break;
       case AppLifecycleState.inactive:
@@ -86,30 +97,35 @@ class HomeController extends GetxController
 
   /// 初始化控制器
   void initControllers() {
-    Get.put(TcpServiceController());
     Get.put(PermissionController());
+    Get.put(TcpServiceController());
+    Get.put(BluetoothController());
     Get.put(HideCameraController());
     Get.put(MlFaceController());
     Get.put(MlSpeechController());
     Get.put(MlTranslatorController());
-    Get.put(BluetoothController());
     Get.put(ShutdownController());
+    Get.put(MlAwarenessController());
   }
 
-  /// 更新时间
-  void updateTime() {
-    var date = DateTime.now();
-    nowTime.value = "${format(date.hour)}:${format(date.minute)}";
+  /// 激活时间更新计时器
+  void activeDateTimer() {
+    var d = DateTime.now();
+    nowTime.value = "${format(d.hour)}:${format(d.minute)}";
     nowDate.value =
-        "${monthList[date.month - 1]} ${format(date.day)}, ${date.year}  ${weekList[date.weekday - 1]}";
+        "${monthList[d.month - 1]} ${format(d.day)}, ${d.year}  ${weekList[d.weekday - 1]}";
 
-    Timer(
-      const Duration(seconds: 1) - Duration(milliseconds: date.millisecond),
-      updateTime,
+    if (dateTimer?.isActive ?? false) {
+      return;
+    }
+    dateTimer?.cancel();
+    dateTimer = Timer.periodic(
+      const Duration(seconds: 1) - Duration(milliseconds: d.millisecond),
+      (_) => activeDateTimer(),
     );
   }
 
-  /// 格式化时间按
+  /// 格式化时间
   String format(Object time) {
     return time.toString().padLeft(2, '0');
   }
@@ -210,6 +226,7 @@ class HomeController extends GetxController
   @override
   void onClose() {
     super.onClose();
+    dateTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
   }
 }
