@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:connect/common/get_notification.dart';
+import 'package:connect/controller/services/ml_speech_controller.dart';
 import 'package:connect/controller/services/permission_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
 import 'package:connect/style/app_theme_style.dart';
@@ -85,6 +86,9 @@ class MlTranslatorController extends GetxController {
   /// 云翻译服务
   Future<String> remoteTranslate(String source) async {
     Map langCode = await checkLangCode(source);
+    String? target;
+
+    MlSpeechController.to.setApiKey();
 
     final setting = MLTranslateSetting.remote(
       sourceText: source,
@@ -92,7 +96,9 @@ class MlTranslatorController extends GetxController {
       targetLangCode: langCode['target'],
     );
 
-    String? target = await remoteTranslator.asyncTranslate(setting);
+    target = await remoteTranslator.asyncTranslate(setting).catchError((e) {
+      target = "[云翻译服务错误!]";
+    });
     await remoteTranslator.stopTranslate();
 
     return target ?? "[云翻译服务错误!]";
@@ -103,6 +109,7 @@ class MlTranslatorController extends GetxController {
   /// 因30分钟/月实时翻译额度限制，功能暂未开放
   void startRealTimeTranslate() async {
     liveCaptionList.value = ["Translator!".obs, "[功能暂未开放]".obs];
+    MlSpeechController.to.setApiKey();
 
     return;
 

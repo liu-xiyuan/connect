@@ -16,9 +16,6 @@ class MlAwarenessController extends GetxController {
 
   static const MethodChannel _c = MethodChannel('android.flutter/Awareness');
 
-  /// 电池电量
-  var batterLevel = 100.obs;
-
   /// 电池电量图标
   var batterLevelIcon = FontAwesomeIcons.batteryFull.obs;
 
@@ -150,23 +147,23 @@ class MlAwarenessController extends GetxController {
   }
 
   /// 激活电池状态更新计时器
-  void activePowerTimer() async {
-    batterLevel.value = (await Power.batteryLevel) as int;
+  Future<void> activePowerTimer() async {
+    int level = (await Power.batteryLevel) as int;
     isCharging.value = await Power.isCharging;
 
-    if (batterLevel.value > 90) {
+    if (level > 90) {
       batterLevelIcon.value = FontAwesomeIcons.batteryFull;
       batterLevelColor.value = AppThemeStyle.white;
-    } else if (batterLevel.value > 50 && batterLevel.value <= 90) {
+    } else if (level > 50 && level <= 90) {
       batterLevelIcon.value = FontAwesomeIcons.batteryThreeQuarters;
       batterLevelColor.value = AppThemeStyle.white;
-    } else if (batterLevel.value > 20 && batterLevel.value <= 50) {
+    } else if (level > 20 && level <= 50) {
       batterLevelIcon.value = FontAwesomeIcons.batteryHalf;
       batterLevelColor.value = AppThemeStyle.orange;
-    } else if (batterLevel.value >= 20 && batterLevel.value > 10) {
+    } else if (level >= 20 && level > 10) {
       batterLevelIcon.value = FontAwesomeIcons.batteryQuarter;
       batterLevelColor.value = AppThemeStyle.red;
-    } else if (batterLevel.value <= 10) {
+    } else if (level <= 10) {
       batterLevelIcon.value = FontAwesomeIcons.batteryEmpty;
       batterLevelColor.value = AppThemeStyle.red;
     }
@@ -175,12 +172,10 @@ class MlAwarenessController extends GetxController {
       batterLevelColor.value = AppThemeStyle.green;
     }
 
-    log('电池电量: ${batterLevel.value} | 充电状态: ${isCharging.value}');
+    log('电池电量: $level | 充电状态: ${isCharging.value}');
 
-    if (powerTimer?.isActive ?? false) {
-      return;
-    }
-    powerTimer?.cancel();
+    if (powerTimer?.isActive ?? false) return;
+
     powerTimer = Timer.periodic(
       const Duration(seconds: 10),
       (_) => activePowerTimer(),
@@ -226,11 +221,10 @@ class MlAwarenessController extends GetxController {
         }
       });
 
-      log('天气标识$weatherId | 体感温度$temperatureC');
+      log('天气标识: $weatherId | 体感温度: $temperatureC');
 
-      if (weatherTimer?.isActive ?? false) {
-        return;
-      }
+      if (weatherTimer?.isActive ?? false) return;
+
       weatherTimer = Timer.periodic(
         const Duration(hours: 1),
         (_) => activeWeatherTimer(),

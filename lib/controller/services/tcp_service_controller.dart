@@ -65,7 +65,7 @@ class TcpServiceController extends GetxController {
   }
 
   /// 显示IP地址编辑框
-  void showEditSheet({
+  void showIPEditSheet({
     bool isSavedConnect = false, // 是否保存并连接
   }) {
     GetNotification.showCustomBottomSheet(
@@ -84,6 +84,26 @@ class TcpServiceController extends GetxController {
         AppTextField(
           initText: ipAddress.value,
           hintText: 'Input: 192.127.0.106:8888',
+        ).marginSymmetric(vertical: 20),
+      ],
+    );
+  }
+
+  /// 显示锁屏密码设置框
+  void showLockPwsEditSheet() {
+    String res = prefs.getString('lockPwd') ?? '';
+    GetNotification.showCustomBottomSheet(
+      title: 'Set lock screen password',
+      confirmBorderColor: AppThemeStyle.clearGrey,
+      confirmOnTap: () async {
+        res = TextFieldController.to.editController.text;
+        Get.back();
+        await prefs.setString('lockPwd', res);
+      },
+      cancelOnTap: () => Get.back(),
+      children: [
+        const AppTextField(
+          hintText: 'Input your password',
         ).marginSymmetric(vertical: 20),
       ],
     );

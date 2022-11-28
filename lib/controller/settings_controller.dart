@@ -23,7 +23,7 @@ class SettingsController extends GetxController {
   /// 更新锁屏密码
   void updateLockPassword() async {
     lockPassword = TextFieldController.to.editController.text;
-
+    Get.back();
     await prefs.setString('lockPwd', lockPassword!);
   }
 }

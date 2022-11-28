@@ -83,7 +83,7 @@ class BluetoothController extends GetxController {
     GetNotification.showCustomBottomSheet(
       title: 'Set MAC address',
       confirmTitle: isSavedConnect ? "save & connect" : "save",
-      confirmBorderColor: AppThemeStyle.white,
+      confirmBorderColor: AppThemeStyle.clearGrey,
       confirmOnTap: () {
         updateMacAddress();
         Get.back();
@@ -196,6 +196,9 @@ class BluetoothController extends GetxController {
 
 /// 蓝牙HID媒体控制
 enum MediaControl {
+  /// 释放按键！
+  release,
+
   /// 静音
   mute,
 
