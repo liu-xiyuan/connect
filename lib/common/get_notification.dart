@@ -8,16 +8,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 class GetNotification {
-  /// 关闭bottomSheet
-  static void closeBottomSheet() {
-    if (Get.isBottomSheetOpen ?? false) {
-      Get.back();
-    }
-  }
-
   /// 显示自定义Toast
   static showToast({
     required String message,
+    Duration? duration,
   }) {
     FToast fToast = FToast();
 
@@ -28,26 +22,26 @@ class GetNotification {
     fToast.init(Get.overlayContext!);
 
     fToast.showToast(
-      toastDuration: const Duration(milliseconds: 2000),
+      toastDuration: duration ?? const Duration(milliseconds: 3000),
       gravity: ToastGravity.TOP,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
         decoration: BoxDecoration(
-          color: Theme.of(Get.context!).cardColor,
+          color: AppThemeStyle.white,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(.1),
+              color: AppThemeStyle.darkGrey,
               blurRadius: 20,
             ),
           ],
         ),
         child: Text(
           message,
-          style: TextStyle(
-            fontSize: 14,
-            color: AppThemeStyle.white,
-          ),
+          style: Theme.of(Get.context!).textTheme.subtitle1!.copyWith(
+                color: AppThemeStyle.black,
+                fontWeight: FontWeight.normal,
+              ),
         ),
       ),
     );
@@ -67,8 +61,8 @@ class GetNotification {
     double maxWidth = 350, // 最大宽度
     EdgeInsets? padding,
     double? borderRadius,
-    Duration duration = const Duration(seconds: 4),
-    Duration animationDuration = const Duration(milliseconds: 1250),
+    Duration duration = const Duration(seconds: 3),
+    Duration animationDuration = const Duration(milliseconds: 750),
     bool isDismissible = true, // 是否开启手势关闭
     DismissDirection dismissDirection = DismissDirection.up, // Snackbar关闭方向
     bool isCleanQueue = true, // 显示时是否关闭队列中的Snackbar
@@ -76,9 +70,7 @@ class GetNotification {
     Function(GetSnackBar)? onTap,
     Function(SnackbarStatus?)? snackbarStatus, // 通知状态监听
   }) {
-    if (isCleanQueue) {
-      Get.closeCurrentSnackbar();
-    }
+    if (isCleanQueue) Get.closeCurrentSnackbar();
 
     Get.snackbar(
       title,
@@ -97,7 +89,7 @@ class GetNotification {
           backgroundColor ?? AppThemeStyle.darkGrey.withOpacity(.7),
       isDismissible: isDismissible,
       maxWidth: maxWidth,
-      borderRadius: borderRadius,
+      borderRadius: borderRadius ?? 20,
       colorText: AppThemeStyle.white,
       onTap: onTap,
       mainButton: tipsIcon != null
@@ -117,6 +109,7 @@ class GetNotification {
                 // 播放音频
                 FlutterRingtonePlayer.play(
                   fromAsset: "assets/audios/notification_fresh.ogg",
+                  // fromAsset: "assets/audios/notification_stone.aac",
                 );
                 break;
               case SnackbarStatus.CLOSED:
@@ -211,7 +204,7 @@ class GetNotification {
 
           /// 取消按钮
           FeedbackButton(
-            onTap: cancelOnTap ?? () => closeBottomSheet(),
+            onTap: cancelOnTap ?? () => Get.back(),
             child: Container(
               width: 175,
               height: 50,

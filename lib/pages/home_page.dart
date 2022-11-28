@@ -21,13 +21,13 @@ class HomePage extends GetView<HomeController> {
           curve: Curves.easeOut,
           duration: const Duration(milliseconds: 300),
           child: GestureDetector(
-            // 左右滑动
-            onHorizontalDragUpdate: (e) => controller.onHorizontalDragUpdate(e),
-            onHorizontalDragEnd: (_) => controller.onHorizontalDragEnd(),
+            // // 左右滑动
+            // onHorizontalDragUpdate: (e) => controller.onHorizontalDragUpdate(e),
+            // onHorizontalDragEnd: (_) => controller.onHorizontalDragEnd(),
 
-            // 上下滑动
-            onVerticalDragUpdate: (e) => controller.onVerticalDragUpdate(e),
-            onVerticalDragEnd: (_) => controller.onVerticalDragEnd(),
+            // // 上下滑动
+            // onVerticalDragUpdate: (e) => controller.onVerticalDragUpdate(e),
+            // onVerticalDragEnd: (_) => controller.onVerticalDragEnd(),
 
             // 长按移动
             onLongPressStart: (_) => controller.onLongPressStart(),
@@ -35,8 +35,8 @@ class HomePage extends GetView<HomeController> {
             onLongPressEnd: (_) => controller.onLongPressEnd(),
 
             // 缩放手势
-            // onScaleUpdate: (e) => controller.onScaleUpdate(e),
-            // onScaleEnd: (_) => controller.onScaleEnd(),
+            onScaleUpdate: (e) => controller.onScaleUpdate(e),
+            onScaleEnd: (e) => controller.onScaleEnd(e),
 
             child: DecoratedBox(
               decoration: const BoxDecoration(color: Colors.transparent),

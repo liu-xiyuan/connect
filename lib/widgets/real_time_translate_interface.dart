@@ -20,7 +20,7 @@ class RealTimeTranslateInterface extends GetView<MlTranslatorController> {
       dispose: (_) => controller.closeRealTimeTranslate(),
       builder: (_) => Obx(
         () => InkWell(
-          onDoubleTap: () => GetNotification.closeBottomSheet(),
+          onDoubleTap: () => Get.back(),
           child: GlassContainer.clearGlass(
             height: context.height,
             width: context.width,

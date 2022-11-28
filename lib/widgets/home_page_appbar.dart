@@ -32,7 +32,8 @@ class HomePageAppbar extends GetView<HomeController> {
                   onTap: () => TcpServiceController.to.connect(),
                   onLongPress: () {
                     Vibrate.feedback(FeedbackType.success); // 震动提示
-                    TcpServiceController.to.showEditSheet(isSavedConnect: true);
+                    TcpServiceController.to
+                        .showIPEditSheet(isSavedConnect: true);
                   },
                   leading: SpinKitDoubleBounce(
                     color: TcpServiceController.to.tcpSocketState.value ==

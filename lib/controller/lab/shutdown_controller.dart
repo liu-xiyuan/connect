@@ -142,7 +142,7 @@ class ShutdownController extends GetxController {
       GetNotification.showCustomBottomSheet(
         title: 'Set Shutdown time',
         confirmOnTap: () {
-          GetNotification.closeBottomSheet();
+          Get.back();
           TcpServiceController.to.sendData(
             TcpCommands.otherAction,
             OtherAction.timedShutdown,

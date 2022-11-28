@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:connect/controller/lab/shutdown_controller.dart';
+import 'package:connect/controller/media_controller.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/ml_awareness_controller.dart';
 import 'package:connect/controller/services/ml_face_controller.dart';
@@ -26,6 +27,9 @@ class HomeController extends GetxController
 
   /// 缩放手势的Y轴缩放比例, 该值必须大于或等于0
   var scaleVerticalScale = 0.0.obs;
+
+  /// 缩放手势的旋转角度
+  var scaleRotation = 0.0.obs;
 
   /// 长按拖动手势的X轴偏移量
   double longPressMoveOffestX = 0.0;
@@ -78,7 +82,6 @@ class HomeController extends GetxController
         BluetoothController.to.initHidDevice();
         activeDateTimer();
         MlAwarenessController.to.activePowerTimer();
-        MlAwarenessController.to.activeWeatherTimer();
 
         log("App进入前台: $state");
         break;
@@ -106,6 +109,7 @@ class HomeController extends GetxController
     Get.put(MlTranslatorController());
     Get.put(ShutdownController());
     Get.put(MlAwarenessController());
+    Get.put(MediaController());
   }
 
   /// 激活时间更新计时器
@@ -118,7 +122,6 @@ class HomeController extends GetxController
     if (dateTimer?.isActive ?? false) {
       return;
     }
-    dateTimer?.cancel();
     dateTimer = Timer.periodic(
       const Duration(seconds: 1) - Duration(milliseconds: d.millisecond),
       (_) => activeDateTimer(),
@@ -131,7 +134,7 @@ class HomeController extends GetxController
   }
 
   /// -----------------------------
-  /// 滑动手势 ！
+  /// 滑动手势 ！与缩放手势冲突
   /// -----------------------------
 
   /// 水平滑动
@@ -140,10 +143,10 @@ class HomeController extends GetxController
   }
 
   void onHorizontalDragEnd() {
-    // offset > a :右滑 | offset < a :左滑
     if (offestX > 5) {
-      //
+      // 右滑
     } else if (offestX < -5) {
+      // 左滑
       Get.toNamed('/tool');
     }
   }
@@ -154,11 +157,10 @@ class HomeController extends GetxController
   }
 
   void onVerticalDragEnd() {
-    // offset > 0 :下滑
     if (offestY > 0) {
-      //
+      // 下滑
     } else if (offestY < 0) {
-      //
+      // 上滑
     }
   }
 
@@ -202,25 +204,50 @@ class HomeController extends GetxController
   /// 缩放手势 ！
   /// -----------------------------
 
+  // /// 初始化双指缩放手势监听
+  // void initScaleListener() {
+  //   ever(
+  //     scaleVerticalScale,
+  //     (value) {
+  //       MediaController.to.updateVolumn(value as double);
+  //     },
+  //     condition: () =>
+  //         scalePointerCount.value == 2 &&
+  //         BluetoothController.to.isConnected.value,
+  //   );
+  // }
+
   void onScaleUpdate(ScaleUpdateDetails e) {
     scalePointerCount.value = e.pointerCount;
     scaleVerticalScale.value = double.parse(e.verticalScale.toStringAsFixed(1));
-    // log('pointerCount: $scalePointerCount|verticalScale: $scaleVerticalScale|');
+    scaleRotation.value = double.parse(e.rotation.toStringAsFixed(1));
+
+    // log('pointerCount: $scalePointerCount | verticalScale: $scaleVerticalScale | rotation: $scaleRotation');
   }
 
-  void onScaleEnd() {
-    if (scalePointerCount.value == 2 && scaleVerticalScale < 0.5) {
+  void onScaleEnd(ScaleEndDetails e) {
+    if (scalePointerCount.value == 2) {
+      MediaController.to.releaseVolumn();
+    }
+
+    if (scalePointerCount.value == 2 && scaleVerticalScale < .5) {
       // 双指捏合
-      log('ZOOM_IN');
+      log('Two-finger ZOOM_IN');
     } else if (scalePointerCount.value == 2 && scaleVerticalScale > 1.5) {
       // 双指张开
-      log('ZOOM_OUT');
+      log('Two-finger ZOOM_OUT');
     } else if (scalePointerCount.value == 3 && scaleVerticalScale < .5) {
       // 三指捏合
+      log('Three Fingers ZOOM_IN');
     } else if (scalePointerCount.value == 3 && scaleVerticalScale > 1.5) {
       /// 三指张开
+      log('Three Fingers ZOOM_OUT');
+    } else if (scalePointerCount.value == 1 &&
+        e.velocity.pixelsPerSecond.dx < -1000) {
+      /// 单指右滑
+      Get.toNamed('/tool');
+      log('scaleVerticalScale: [${e.velocity.pixelsPerSecond}]');
     }
-    // log('${scalePointerCount} | ${scaleVerticalScale}');
   }
 
   @override

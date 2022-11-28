@@ -10,9 +10,9 @@ class AppThemeStyle {
   static Color orange = ColorUtil.hex("#FF9500");
   static Color white = Colors.white;
   static Color black = Colors.black;
-  static Color darkGrey = ColorUtil.hex("#2C2C2E");
+  static Color darkGrey = ColorUtil.hex("#1c1c1e");
   static Color clearGrey = ColorUtil.hex("#EBEBF5").withOpacity(.5);
-  static Color blurGrey = ColorUtil.hex("#2C2C2E").withOpacity(.6);
+  static Color blurGrey = darkGrey.withOpacity(.6);
 
   /// 主题
   static ThemeData appTheme = ThemeData(

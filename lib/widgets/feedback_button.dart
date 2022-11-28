@@ -35,13 +35,10 @@ class FeedbackButton extends StatelessWidget {
         child: GestureDetector(
           onTapUp: (_) {
             scale.value = 1.0;
+            if (enableVibrate) Vibrate.feedback(FeedbackType.success);
+
             onTap();
-            if (onTapUp != null) {
-              onTapUp!(_);
-            }
-            if (enableVibrate) {
-              Vibrate.feedback(FeedbackType.medium);
-            }
+            if (onTapUp != null) onTapUp!(_);
           },
           onTapDown: onTapDown,
           onTapCancel: () => scale.value = 1,

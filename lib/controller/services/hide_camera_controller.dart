@@ -86,14 +86,16 @@ class HideCameraController extends GetxController {
   Future<bool> saveCameraImage() async {
     bool res = false;
 
-    await cameraEngine.capture().then((value) {
-      // 将面部图片保存在本地
-      File(MlFaceController.to.faceLocalPath).writeAsBytes(
-        value,
-        mode: FileMode.write,
-      );
-      res = true;
-    }, onError: (e) {
+    try {
+      await cameraEngine.capture().then((value) {
+        // 将面部图片保存在本地
+        File(MlFaceController.to.faceLocalPath).writeAsBytes(
+          value,
+          mode: FileMode.write,
+        );
+        res = true;
+      });
+    } catch (e) {
       GetNotification.showCustomSnackbar(
         'Face Unlock',
         'Face capture error, please try again.',
@@ -102,7 +104,9 @@ class HideCameraController extends GetxController {
       );
       log(e.toString());
       res = false;
-    }).whenComplete(() => cameraEngine.release());
+    }
+
+    cameraEngine.release();
     return res;
   }
 }

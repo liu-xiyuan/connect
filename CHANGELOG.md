@@ -1,4 +1,11 @@
-# Connect Change log
+# Connect Changelog
+
+## [2.2.0]
+
+- 新增 音量控制手势
+- 修复 人脸识别图像捕获错误
+- 优化 Snackbar动画
+- 优化 部分UI样式
 
 ## [2.1.0]
 

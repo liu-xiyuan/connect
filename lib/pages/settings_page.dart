@@ -30,24 +30,11 @@ class SettingsPage extends GetView<SettingsController> {
                 SettingsItem(
                   title: 'IP Address',
                   settingInfo: TcpServiceController.to.ipAddress.value,
-                  onTap: () => TcpServiceController.to.showEditSheet(),
+                  onTap: () => TcpServiceController.to.showIPEditSheet(),
                 ),
                 SettingsItem(
                   title: 'LockScreen Password',
-                  onTap: () {
-                    GetNotification.showCustomBottomSheet(
-                      title: 'Set lock screen password',
-                      confirmBorderColor: AppThemeStyle.white,
-                      confirmOnTap: () {
-                        controller.updateLockPassword();
-                        Get.back();
-                      },
-                      cancelOnTap: () => Get.back(),
-                      children: [
-                        const AppTextField().marginSymmetric(vertical: 20),
-                      ],
-                    );
-                  },
+                  onTap: () => TcpServiceController.to.showLockPwsEditSheet(),
                 ),
               ],
             ),

@@ -191,6 +191,9 @@ class MediaInterface extends GetView<MediaController> {
                               MediaControl.volumeDown,
                             );
                           }
+                          BluetoothController.to.mediaControl(
+                            MediaControl.release,
+                          );
                         },
                         children: [
                           basicIcon(FontAwesomeIcons.plus),
@@ -232,6 +235,9 @@ class MediaInterface extends GetView<MediaController> {
                               MediaControl.nextTrack,
                             );
                           }
+                          BluetoothController.to.mediaControl(
+                            MediaControl.release,
+                          );
                         },
                         onTapDown: (e) {},
                         backgroundColor: Colors.white,

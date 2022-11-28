@@ -175,11 +175,13 @@ public class BluetoothClient extends BluetoothHidDevice.Callback {
             case "MediaControl.mute":
                 data = new byte[]{(byte)0x40};
                 break;
+            case "MediaControl.release":
+                data = new byte[]{0};
             default:
                 break;
         }
         sendData(3,data);
-        sendData(3,new byte[]{0});
+//        sendData(3,new byte[]{0});
     }
 
 
