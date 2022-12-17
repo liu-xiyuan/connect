@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:connect/common/get_notification.dart';
-import 'package:connect/controller/services/permission_controller.dart';
+import 'package:connect/common/permission_checker.dart';
+import 'package:connect/model/weather_info.dart';
 import 'package:connect/style/app_theme_style.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -29,7 +30,7 @@ class MlAwarenessController extends GetxController {
   Timer? powerTimer;
 
   /// 日期类别 - 夜晚
-  var isNight = false.obs;
+  var isDayNight = false.obs;
 
   /// 体感温度
   var temperatureC = 18.obs;
@@ -39,62 +40,6 @@ class MlAwarenessController extends GetxController {
 
   /// 天气更新计时器
   Timer? weatherTimer;
-
-  /// 天气标识图标组
-  Map<String, Map> weatherMap = {
-    'sun': {
-      'id': [1, 2, 33, 34],
-      'icon': FontAwesomeIcons.solidSun,
-    },
-    'cloud': {
-      'id': [3, 4, 5, 6, 7, 8, 35, 36],
-      'icon': FontAwesomeIcons.cloud,
-    },
-    'smog': {
-      'id': [11, 38],
-      'icon': FontAwesomeIcons.smog,
-    },
-    'cloud-showers-heavy': {
-      'id': [12, 13, 39, 40],
-      'icon': FontAwesomeIcons.cloudShowersHeavy,
-    },
-    'cloud-sun-rain': {
-      'id': [14, 17],
-      'icon': FontAwesomeIcons.cloudSunRain,
-    },
-    'cloud-bolt': {
-      'id': [15, 16, 41, 42],
-      'icon': FontAwesomeIcons.cloudBolt,
-    },
-    'cloud-rain': {
-      'id': [18, 20, 26],
-      'icon': FontAwesomeIcons.cloudRain,
-    },
-    'snow': {
-      'id': [19, 21, 22, 23, 25, 29, 43, 44],
-      'icon': FontAwesomeIcons.solidSnowflake,
-    },
-    'ice': {
-      'id': [24],
-      'icon': FontAwesomeIcons.icicles,
-    },
-    'hot': {
-      'id': [30],
-      'icon': FontAwesomeIcons.temperatureHigh,
-    },
-    'cold': {
-      'id': [31],
-      'icon': FontAwesomeIcons.temperatureLow,
-    },
-    'wind': {
-      'id': [32],
-      'icon': FontAwesomeIcons.wind,
-    },
-    'cloud-moon': {
-      'id': [37],
-      'icon': FontAwesomeIcons.cloudMoon,
-    },
-  };
 
   @override
   void onInit() {
@@ -110,7 +55,7 @@ class MlAwarenessController extends GetxController {
     AwarenessBarrierClient.onBarrierStatusStream.listen((e) {
       switch (e.barrierLabel) {
         case 'Time Night Barrier':
-          isNight.value = e.presentStatus == 1 ? true : false;
+          isDayNight.value = e.presentStatus == 1 ? true : false;
           break;
         case 'Light Barrier':
           if (e.presentStatus == 0) {
@@ -135,7 +80,7 @@ class MlAwarenessController extends GetxController {
 
   /// 时间类别Barrier
   void addTimeTypeBarrier() async {
-    if (await PermissionController.to.checkAwarenessPermissions()) {
+    if (await PermissionChecker.checkAwarenessPermissions()) {
       /// 夜晚 - 1
       AwarenessBarrier nightBarrier = TimeBarrier.inTimeCategory(
         barrierLabel: 'Time Night Barrier',
@@ -172,7 +117,7 @@ class MlAwarenessController extends GetxController {
       batterLevelColor.value = AppThemeStyle.green;
     }
 
-    log('电池电量: $level | 充电状态: ${isCharging.value}');
+    // log('电池电量: $level | 充电状态: ${isCharging.value}');
 
     if (powerTimer?.isActive ?? false) return;
 
@@ -204,22 +149,23 @@ class MlAwarenessController extends GetxController {
   /// 激活天气信息更新计时器 - 每小时更新
   void activeWeatherTimer() async {
     WeatherResponse? res;
-    if (await PermissionController.to.checkAwarenessPermissions()) {
+
+    if (await PermissionChecker.checkAwarenessPermissions()) {
       try {
         res = await AwarenessCaptureClient.getWeatherByDevice();
       } catch (e) {
         GetNotification.showToast(message: "Weather update error");
       }
 
-      temperatureC.value = res?.weatherSituation?.situation?.temperatureC ?? 0;
+      int nowHours = DateTime.now().hour;
+      int weatherId = res?.hourlyWeather?[nowHours].weatherId ?? 0;
 
-      int weatherId = res?.weatherSituation?.situation?.cnWeatherId ?? 0;
+      temperatureC.value = res?.hourlyWeather?[nowHours].tempC ?? 0;
 
-      weatherMap.forEach((key, value) {
-        if (value['id'].contains(weatherId)) {
-          weatherIcon.value = value['icon'];
-        }
-      });
+      weatherIcon.value = WeatherInfo.getWeatherIcon(
+        weatherId,
+        isDayNight.value,
+      );
 
       log('天气标识: $weatherId | 体感温度: $temperatureC');
 

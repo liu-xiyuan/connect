@@ -1,3 +1,6 @@
+import 'package:connect/style/app_theme_style.dart';
+import 'package:connect/widgets/about_dialog.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -28,15 +31,20 @@ class AboutController extends GetxController {
   }
 
   /// 访问Github主页
-  void openGithubHome() {
+  void toGithubHome() {
     Uri url = Uri.parse("https://github.com/liuxiyuan-2022/connect");
     launchUrl(url, mode: LaunchMode.externalNonBrowserApplication);
   }
 
-  void openHelp() {
-    Uri url = Uri.parse(
-      'https://github.com/liuxiyuan-2022/connect/blob/main/README.md#%E5%B8%AE%E5%8A%A9',
+  /// 显示About Dialog页面
+  void showAboutDialog() {
+    Get.defaultDialog(
+      title: '',
+      titlePadding: const EdgeInsets.all(0),
+      backgroundColor: AppThemeStyle.darkGrey,
+      radius: 40,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+      content: const AboutDialog(),
     );
-    launchUrl(url, mode: LaunchMode.externalNonBrowserApplication);
   }
 }

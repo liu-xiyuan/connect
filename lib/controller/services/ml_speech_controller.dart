@@ -1,6 +1,7 @@
 import 'dart:developer';
-import 'package:connect/controller/services/permission_controller.dart';
+import 'package:connect/common/permission_checker.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
+import 'package:connect/model/tcp_call.dart';
 import 'package:connect/widgets/speech_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,25 +15,20 @@ import 'package:siri_wave/siri_wave.dart';
 class MlSpeechController extends GetxController {
   static MlSpeechController get to => Get.find();
 
+  late SharedPreferences prefs;
+
   /// 语音波形控制器
   final siriWaveControlle = SiriWaveController(amplitude: 1, speed: .1);
 
   /// 语音识别转换的文字
-  final speechText = ''.obs;
+  var speechText = ''.obs;
 
-  String hmsApiKey = '';
-
-  var recognizer = MLAsrRecognizer().obs;
+  var recognizer = MLAsrRecognizer();
 
   var recognizerStatus = SpeechStatus.running.obs;
 
-  late SharedPreferences prefs;
-
   /// 命令模式列表
-  List<String> commandModeList = [
-    'Default Mode',
-    'Input Mode',
-  ];
+  List<String> commandModeList = ['Input Mode'];
 
   /// 当前命令模式索引值
   var commandModeIndex = 0.obs;
@@ -41,29 +37,36 @@ class MlSpeechController extends GetxController {
   void onInit() async {
     super.onInit();
     prefs = await SharedPreferences.getInstance();
-    setApiKey();
+    setHmsApiKey();
   }
 
-  /// 设置APP的HMS ML apiKey
-  void setApiKey() async {
-    hmsApiKey = prefs.getString('HMSApiKey') ?? '';
+  /// 设置HMS apiKey
+  void setHmsApiKey() async {
+    String api = prefs.getString('HMSApiKey') ?? '';
 
-    if (hmsApiKey == '') {
+    if (api == '') {
       try {
-        hmsApiKey = await rootBundle.loadString('assets/HMS_ApiKey.txt');
-        prefs.setString('HMSApiKey', hmsApiKey);
-        log('Set HMS ApiKey: $hmsApiKey');
+        api = await rootBundle.loadString('assets/HMS_ApiKey.txt');
+        prefs.setString('HMSApiKey', api);
       } catch (e) {
         log('$e');
       }
     }
-    MLLanguageApp().setApiKey(hmsApiKey);
+    MLLanguageApp().setApiKey(api);
+  }
+
+  /// 切换语音识别服务
+  void changeMode(int index) {
+    commandModeIndex.value = index;
+    if (index == 0) {
+      speechText.value = 'Hi, Can I help you ?';
+    }
   }
 
   /// 开始语音识别
   Future<void> startSpeechRecognition() async {
     // 每次使用语音识别前调用一次, 防止出现未设置key的BUG
-    setApiKey();
+    setHmsApiKey();
 
     recognizerStatus.value = SpeechStatus.running;
 
@@ -73,13 +76,13 @@ class MlSpeechController extends GetxController {
       FlutterRingtonePlayer.play(
         fromAsset: "assets/audios/notification_incall.aac",
       );
-      speechText.value = 'Hi, Can I help you?';
+      speechText.value = 'Hi, Can I help you ?';
     }
 
     // 识别结果
     void onRecognizingResults(String result) {
       speechText.value = result;
-      log('onRecognizingResults: $result');
+      log('onRecognizingResults:[$result]');
     }
 
     // 最终识别结果
@@ -87,20 +90,27 @@ class MlSpeechController extends GetxController {
       if (recognizerStatus.value == SpeechStatus.running) {
         if (result != '') {
           speechText.value = result;
-        } else {
-          speechText.value = 'Sorry I didn\'t catch that.';
+          switch (commandModeList[commandModeIndex.value]) {
+            case 'Input Mode':
+              TcpServiceController.to.sendData(
+                TcpCommands.speechAction,
+                SpeechAction.inputText,
+                data: result,
+              );
+              break;
+            default:
+          }
         }
-        sendSpeechResult(result);
 
-        log('onResults: $result');
+        log('onResults:[$result]');
       }
+      stopSpeechRecognition();
     }
 
     void onError(int error, String errorMessage) {
       log('onError: $error | errorMessage: $errorMessage');
     }
 
-    ///  应程序状态码
     ///  state = 1: 启动语音识别服务
     ///  state = 2: 未识别到用户语音
     ///  state = 3: 未识别到用户语音_超时 自动执行onResults()
@@ -109,11 +119,10 @@ class MlSpeechController extends GetxController {
       log('onState: $state');
       switch (state) {
         case 2:
-          speechText.value = 'Sorry I didn\'t catch that.';
+          speechText.value = 'Sorry I can\'t hear clearly';
           break;
         case 3:
           // 这个方法在onResults()前调用
-          stopSpeechRecognition(); // 一段时间里内没有监听到语音输入自动关闭
           break;
         case 7:
           speechText.value = '没有网络连接';
@@ -123,7 +132,7 @@ class MlSpeechController extends GetxController {
     }
 
     // 设置监听器来跟踪事件。
-    recognizer.value.setAsrListener(
+    recognizer.setAsrListener(
       MLAsrListener(
         onStartListening: onStartListening,
         onRecognizingResults: onRecognizingResults,
@@ -139,41 +148,8 @@ class MlSpeechController extends GetxController {
       language: MLAsrConstants.LAN_ZH_CN,
       feature: MLAsrConstants.FEATURE_WORDFLUX,
     );
-    recognizer.value.startRecognizing(setting);
-  }
 
-  /// 将语音识别文本通过TCP发送至电脑
-  Future<void> sendSpeechResult(String data) async {
-    stopSpeechRecognition();
-    switch (commandModeList[commandModeIndex.value]) {
-      case 'Default Mode':
-        if (data.startsWith('输入')) {
-          TcpServiceController.to.sendData(
-            TcpCommands.speechAction,
-            SpeechAction.inputText,
-            data: data.split('输入')[1],
-          );
-        } else if (data == '锁屏') {
-          TcpServiceController.to.sendData(
-            TcpCommands.otherAction,
-            OtherAction.lockScreen,
-          );
-        } else if (data == '复制') {
-          TcpServiceController.to.sendData(
-            TcpCommands.otherAction,
-            OtherAction.copyText,
-          );
-        }
-        break;
-      case 'Input Mode':
-        TcpServiceController.to.sendData(
-          TcpCommands.speechAction,
-          SpeechAction.inputText,
-          data: data,
-        );
-        break;
-      default:
-    }
+    recognizer.startRecognizing(setting);
   }
 
   /// 显示语音识别页面
@@ -181,7 +157,7 @@ class MlSpeechController extends GetxController {
     if (Get.isBottomSheetOpen ?? false) Get.back();
 
     // 检查权限
-    if (await PermissionController.to.checkSpeechPermissions()) {
+    if (await PermissionChecker.checkSpeechPermissions()) {
       Get.bottomSheet(
         const SpeechFaceInterface(),
         enableDrag: false,
@@ -197,7 +173,7 @@ class MlSpeechController extends GetxController {
   void stopSpeechRecognition() {
     // 识别结束后销毁识别器
     if (recognizerStatus.value != SpeechStatus.closed) {
-      recognizer.value.destroy();
+      recognizer.destroy();
     }
     recognizerStatus.value = SpeechStatus.closed;
     log('SpeechRecognitionStop');

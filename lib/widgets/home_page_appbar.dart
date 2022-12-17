@@ -33,7 +33,7 @@ class HomePageAppbar extends GetView<HomeController> {
                   onLongPress: () {
                     Vibrate.feedback(FeedbackType.success); // 震动提示
                     TcpServiceController.to
-                        .showIPEditSheet(isSavedConnect: true);
+                        .showIpEditSheet(isSavedConnect: true);
                   },
                   leading: SpinKitDoubleBounce(
                     color: TcpServiceController.to.tcpSocketState.value ==
@@ -81,7 +81,7 @@ class HomePageAppbar extends GetView<HomeController> {
           actions: [
             // 夜间
             Visibility(
-              visible: MlAwarenessController.to.isNight.value,
+              visible: MlAwarenessController.to.isDayNight.value,
               child: FaIcon(
                 FontAwesomeIcons.solidMoon,
                 size: 12,

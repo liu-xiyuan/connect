@@ -185,7 +185,7 @@ packages:
     source: hosted
     version: "3.0.1"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       url: "https://pub.flutter-io.cn"
@@ -240,6 +240,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.6.4"
+  json_annotation:
+    dependency: "direct main"
+    description:
+      name: json_annotation
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.7.0"
   lints:
     dependency: transitive
     description:
@@ -602,6 +609,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.1"
+  uuid:
+    dependency: "direct main"
+    description:
+      name: uuid
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.7"
   vector_math:
     dependency: transitive
     description:

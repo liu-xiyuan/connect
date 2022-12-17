@@ -1,6 +1,5 @@
 import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/app_bottomsheet_box.dart';
-import 'package:connect/widgets/feedback_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -109,7 +108,6 @@ class GetNotification {
                 // 播放音频
                 FlutterRingtonePlayer.play(
                   fromAsset: "assets/audios/notification_fresh.ogg",
-                  // fromAsset: "assets/audios/notification_stone.aac",
                 );
                 break;
               case SnackbarStatus.CLOSED:
@@ -150,91 +148,23 @@ class GetNotification {
   }) {
     return Get.bottomSheet(
       AppBottomSheetBox(
-        children: [
-          // 标题
-          Text(
-            title,
-            style: Theme.of(Get.context!).textTheme.bodyText1,
-          ),
-          // 内容
-          Visibility(
-            visible: message == null ? false : true,
-            child: Text(
-              message ?? '',
-              style: Theme.of(Get.context!)
-                  .textTheme
-                  .subtitle1!
-                  .copyWith(fontWeight: FontWeight.normal),
-            ).marginOnly(top: 15),
-          ),
-          // 自定义组件
-          Visibility(
-            visible: children.isEmpty ? false : true,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: children,
-            ).marginSymmetric(vertical: 25),
-          ),
-
-          // 确认按钮
-          FeedbackButton(
-            onTap: confirmOnTap,
-            child: Container(
-              width: 180,
-              height: 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(
-                  color: confirmBorderColor ?? Colors.transparent,
-                  width: 3,
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  confirmTitle ?? 'Confirm'.tr,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(Get.context!).textTheme.bodyText1!.copyWith(
-                        color: confirmTextColor ?? AppThemeStyle.white,
-                        fontWeight: FontWeight.normal,
-                      ),
-                ),
-              ),
-            ),
-          ).marginOnly(bottom: 20),
-
-          /// 取消按钮
-          FeedbackButton(
-            onTap: cancelOnTap ?? () => Get.back(),
-            child: Container(
-              width: 175,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(
-                  color: cancelBorderColor ?? Colors.transparent,
-                  width: 3,
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  cancelTitle ?? 'Cancel'.tr,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(Get.context!).textTheme.bodyText1!.copyWith(
-                        color: confirmTextColor ?? AppThemeStyle.white,
-                        fontWeight: FontWeight.normal,
-                      ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        title: title,
+        message: message,
+        confirmTitle: confirmTitle,
+        confirmTextColor: confirmTextColor,
+        confirmBorderColor: confirmBorderColor,
+        confirmOnTap: confirmOnTap,
+        cancelTitle: cancelTitle,
+        cancelTextColor: cancelTextColor,
+        cancelBorderColor: cancelBorderColor,
+        cancelOnTap: cancelOnTap,
+        children: children,
       ),
       ignoreSafeArea: true,
       isScrollControlled: true, // 是否支持全屏弹出
       barrierColor: Colors.black12,
-      isDismissible: isDismissble ?? true,
-      enableDrag: enableDrag ?? true,
+      isDismissible: isDismissble ?? false, // 点击背景是否可以关闭
+      enableDrag: enableDrag ?? true, // 是否可以滑动关闭
     );
   }
 }

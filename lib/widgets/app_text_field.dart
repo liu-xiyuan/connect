@@ -1,7 +1,6 @@
 import 'package:connect/controller/text_field_controller.dart';
 import 'package:connect/style/app_theme_style.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class AppTextField extends GetView<TextFieldController> {
@@ -34,7 +33,6 @@ class AppTextField extends GetView<TextFieldController> {
         border: Border(
           bottom: BorderSide(
             width: 6,
-            // color: Colors.grey.withOpacity(.3),
             color: AppThemeStyle.clearGrey.withOpacity(.3),
           ),
         ),
@@ -49,9 +47,9 @@ class AppTextField extends GetView<TextFieldController> {
               textBaseline: TextBaseline.alphabetic,
               fontWeight: FontWeight.normal,
             ),
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(25) //限制长度
-        ],
+        // inputFormatters: [
+        // LengthLimitingTextInputFormatter(25) //限制长度
+        // ],
         decoration: InputDecoration(
           isDense: true,
           hintText: hintText,
@@ -64,11 +62,7 @@ class AppTextField extends GetView<TextFieldController> {
           border: InputBorder.none,
           suffixIcon: IconButton(
             icon: Icon(Icons.clear, color: AppThemeStyle.clearGrey, size: 20),
-            // icon: Icon(Icons.clear, color: Colors.grey[400], size: 20),
-            onPressed: () {
-              // 清空字符串
-              controller.editController.clear();
-            },
+            onPressed: () => controller.editController.clear(),
           ),
         ),
       ),

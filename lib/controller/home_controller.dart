@@ -8,7 +8,7 @@ import 'package:connect/controller/services/ml_awareness_controller.dart';
 import 'package:connect/controller/services/ml_face_controller.dart';
 import 'package:connect/controller/services/hide_camera_controller.dart';
 import 'package:connect/controller/services/ml_translator_controller.dart';
-import 'package:connect/controller/services/permission_controller.dart';
+import 'package:connect/common/permission_checker.dart';
 import 'package:connect/controller/services/ml_speech_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +100,7 @@ class HomeController extends GetxController
 
   /// 初始化控制器
   void initControllers() {
-    Get.put(PermissionController());
+    Get.put(PermissionChecker());
     Get.put(TcpServiceController());
     Get.put(BluetoothController());
     Get.put(HideCameraController());

@@ -1,4 +1,3 @@
-import 'package:connect/common/get_notification.dart';
 import 'package:connect/controller/services/ml_speech_controller.dart';
 import 'package:connect/controller/services/ml_translator_controller.dart';
 import 'package:connect/style/app_theme_style.dart';
@@ -40,7 +39,7 @@ class RealTimeTranslateInterface extends GetView<MlTranslatorController> {
                   right: 30,
                   bottom: 15,
                   child: Text(
-                    '*Double-click to stop translation',
+                    '* Double-click to stop translation',
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2!

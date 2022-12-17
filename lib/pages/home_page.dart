@@ -19,7 +19,7 @@ class HomePage extends GetView<HomeController> {
         () => AnimatedSlide(
           offset: Offset(controller.homePageOffestX.value, 0),
           curve: Curves.easeOut,
-          duration: const Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 250),
           child: GestureDetector(
             // // 左右滑动
             // onHorizontalDragUpdate: (e) => controller.onHorizontalDragUpdate(e),

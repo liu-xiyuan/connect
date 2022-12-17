@@ -1,6 +1,6 @@
 import 'package:connect/controller/lab/shutdown_controller.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
-import 'package:connect/controller/services/permission_controller.dart';
+import 'package:connect/common/permission_checker.dart';
 import 'package:connect/widgets/app_page_template.dart';
 import 'package:connect/widgets/lab_item_card.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class LabPage extends GetView<ShutdownController> {
           LabItemCard(
             title: 'Smile Shot Detection',
             onTap: () async {
-              if (await PermissionController.to.checkFacePermissions() &&
+              if (await PermissionChecker.checkFacePermissions() &&
                   BluetoothController.to.checkBluetooth()) {
                 Get.toNamed('/expression');
               }
