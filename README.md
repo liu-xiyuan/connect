@@ -10,18 +10,12 @@
 2. 电脑端和手机端需支持**蓝牙连接**并在**同一网络**下
 3. App大部分功能实现基于**蓝牙HID协议**, 请检查手机是否适配蓝牙HID
 
-
-
 ## 功能
 
 - 人脸识别解锁电脑
-- 文本翻译、~~实时字幕~~ (暂未开放)
-- 手势控制
-- 语音输入
-- 媒体控制
+- 语音输入, 文本翻译, ~~实时字幕~~ (暂未开放)
+- 媒体控制, 手势控制
 - 定时关机
-
-
 
 ## 安装
 
@@ -37,7 +31,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 ### 配置Connect App端
 
-> Flutter=3.0.4
+> Flutter SDK：3.0.4
 
 1. 在项目目录下执行命令, 安装项目所需依赖 :
 
@@ -73,7 +67,7 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 ### 配置Connect Server端
 
-> python=3.7
+> Python：3.7
 
 1. 安装pyhook
 
@@ -112,8 +106,6 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 5. Connect Server服务可以在**任务管理器**的**启动**中找到: `connectServer.bat`
 
-
-
 ## 设置
 
 **在运行App之前，请完成以下步骤 !**
@@ -127,8 +119,6 @@ git clone https://github.com/liuxiyuan-2022/connect.git
 
 - 在 **设置**  > **应用管理** 中找到 **Connect** 并**授予相关权限**
 - 在 **电池** > **后台耗电管理** 中找到 **Connect** 并 **允许后台高耗电**
-
- 
 
 ## 帮助
 
