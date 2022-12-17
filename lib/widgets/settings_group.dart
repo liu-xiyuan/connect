@@ -30,12 +30,12 @@ class SettingsGroup extends StatelessWidget {
                   color: AppThemeStyle.clearGrey,
                   fontWeight: FontWeight.normal,
                 ),
-          ).marginOnly(top: 25),
+          ),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: items,
           ),
-          const Divider().marginOnly(top: 5),
+          const Divider(),
         ],
       ),
     );

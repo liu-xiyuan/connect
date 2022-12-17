@@ -1,14 +1,11 @@
 import 'package:connect/common/get_notification.dart';
 import 'package:connect/style/app_theme_style.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-/// 权限检查服务
-class PermissionController extends GetxController {
-  static PermissionController get to => Get.find();
-
-  void showNotification() {
+/// 权限检查
+class PermissionChecker {
+  static void showNotification() {
     GetNotification.showCustomSnackbar(
       "Missing Permissions ",
       "Please allow relevant permissions!",
@@ -18,7 +15,7 @@ class PermissionController extends GetxController {
   }
 
   /// 检查面部识别所需权限
-  Future<bool> checkFacePermissions() async {
+  static Future<bool> checkFacePermissions() async {
     bool res = false;
     Map<Permission, PermissionStatus> statuses = await [
       Permission.storage,
@@ -36,7 +33,7 @@ class PermissionController extends GetxController {
   }
 
   /// 检查语音识别所需权限
-  Future<bool> checkSpeechPermissions() async {
+  static Future<bool> checkSpeechPermissions() async {
     var speechStatus = await Permission.speech.request();
 
     if (speechStatus.isGranted) {
@@ -48,7 +45,7 @@ class PermissionController extends GetxController {
   }
 
   /// 检查蓝牙功能所需权限
-  Future<bool> checkBluePermissions() async {
+  static Future<bool> checkBluePermissions() async {
     var blueStatus = await Permission.bluetoothConnect.request();
 
     if (blueStatus.isGranted) {
@@ -60,7 +57,7 @@ class PermissionController extends GetxController {
   }
 
   /// 检查Awareness所需权限
-  Future<bool> checkAwarenessPermissions() async {
+  static Future<bool> checkAwarenessPermissions() async {
     bool res = false;
     Map<Permission, PermissionStatus> statuses = await [
       Permission.location,

@@ -1,10 +1,12 @@
 import 'package:connect/common/color_util.dart';
+import 'package:connect/controller/about_controller.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/ml_face_controller.dart';
 import 'package:connect/controller/services/ml_speech_controller.dart';
 import 'package:connect/controller/services/ml_translator_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
 import 'package:connect/controller/tool_controller.dart';
+import 'package:connect/model/tcp_call.dart';
 import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/app_page_template.dart';
 import 'package:connect/widgets/feedback_button.dart';
@@ -54,7 +56,6 @@ class ToolPage extends GetView<ToolController> {
                 MlSpeechController.to.showSpeechInterface();
               },
               title: 'Speech',
-              // icon: AppCustomIcons.waveformLine,
               icon: FontAwesomeIcons.atom,
               iconColor: ColorUtil.hex("#ff9066"),
             ),
@@ -80,9 +81,7 @@ class ToolPage extends GetView<ToolController> {
 
             // 实验室
             ToolItem(
-              onTap: () {
-                Get.toNamed('/lab');
-              },
+              onTap: () => Get.toNamed('/lab'),
               title: 'Laboratory',
               icon: FontAwesomeIcons.microscope,
               iconColor: ColorUtil.hex("#797dff"),
@@ -100,9 +99,7 @@ class ToolPage extends GetView<ToolController> {
 
             // 设置页面
             ToolItem(
-              onTap: () {
-                Get.toNamed('/settings');
-              },
+              onTap: () => Get.toNamed('/settings'),
               title: 'Settings',
               icon: FontAwesomeIcons.gear,
               iconColor: ColorUtil.hex('#3bc4c3'),
@@ -110,9 +107,7 @@ class ToolPage extends GetView<ToolController> {
 
             // 关于页面
             ToolItem(
-              onTap: () {
-                Get.toNamed('/about');
-              },
+              onTap: () => Get.put(AboutController()).showAboutDialog(),
               title: 'About',
               icon: FontAwesomeIcons.circleInfo,
               iconColor: ColorUtil.hex('#fe759f'),

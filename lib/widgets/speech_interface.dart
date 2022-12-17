@@ -1,5 +1,4 @@
 import 'package:connect/controller/services/ml_speech_controller.dart';
-import 'package:connect/style/app_custom_icons.dart';
 import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/feedback_button.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +33,7 @@ class SpeechFaceInterface extends GetView<MlSpeechController> {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [Colors.black.withOpacity(.5), Colors.black],
-                        stops: const [0, .6]),
+                        stops: const [0, .8]),
                   ),
                 ),
               ),
@@ -69,11 +68,9 @@ class SpeechFaceInterface extends GetView<MlSpeechController> {
                     //语音转换的文字
                     Text(
                       controller.speechText.value,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(fontSize: 20),
-                    ).marginOnly(bottom: 15),
+                      style: Theme.of(context).textTheme.headline2!,
+                    ),
+
                     // 命令模式列表
                     SizedBox(
                       height: 30,
@@ -86,9 +83,7 @@ class SpeechFaceInterface extends GetView<MlSpeechController> {
                         itemBuilder: (_, index) {
                           return Obx(
                             () => FeedbackButton(
-                              onTap: () {
-                                controller.commandModeIndex.value = index;
-                              },
+                              onTap: () => controller.changeMode(index),
                               child: Container(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
@@ -96,7 +91,7 @@ class SpeechFaceInterface extends GetView<MlSpeechController> {
                                   color: controller.commandModeIndex.value ==
                                           index
                                       ? AppThemeStyle.darkGrey
-                                      : AppThemeStyle.darkGrey.withOpacity(.5),
+                                      : AppThemeStyle.darkGrey.withOpacity(.6),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Center(
@@ -110,14 +105,14 @@ class SpeechFaceInterface extends GetView<MlSpeechController> {
                           );
                         },
                       ),
-                    ),
+                    ).marginOnly(top: 15),
                   ],
                 ),
               ),
 
               // 语音识别按钮
               Positioned(
-                bottom: 30,
+                bottom: 20,
                 child: AnimatedScale(
                   scale:
                       controller.recognizerStatus.value == SpeechStatus.closed
@@ -126,10 +121,9 @@ class SpeechFaceInterface extends GetView<MlSpeechController> {
                   duration: const Duration(milliseconds: 200),
                   child: FeedbackButton(
                     onTap: () => controller.startSpeechRecognition(),
-                    child: const Icon(
-                      AppCustomIcons.waveformLine,
-                      color: Colors.white,
-                      size: 55,
+                    child: Image.asset(
+                      'assets/images/speech_btn.png',
+                      height: 75,
                     ),
                   ),
                 ),

@@ -5,6 +5,7 @@ import 'package:connect/controller/lab/shutdown_controller.dart';
 import 'package:connect/controller/services/ml_face_controller.dart';
 import 'package:connect/controller/services/ml_translator_controller.dart';
 import 'package:connect/controller/text_field_controller.dart';
+import 'package:connect/model/tcp_call.dart';
 import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/app_text_field.dart';
 import 'package:flutter/services.dart';
@@ -17,13 +18,13 @@ import 'package:tcp_client_dart/tcp_client_dart.dart';
 class TcpServiceController extends GetxController {
   static TcpServiceController get to => Get.find();
 
+  late SharedPreferences prefs;
+
   TcpClient? tcpClient;
 
   RxString ipAddress = "".obs;
   late String host;
   late int port;
-
-  late SharedPreferences prefs;
 
   /// TCP连接状态
   var tcpSocketState = TcpConnectionState.disconnected.obs;
@@ -39,13 +40,13 @@ class TcpServiceController extends GetxController {
 
   @override
   void onInit() async {
-    await initIPaddress();
+    await initIpAddress();
     connect();
     super.onInit();
   }
 
   /// 初始化ip地址
-  Future initIPaddress() async {
+  Future initIpAddress() async {
     prefs = await SharedPreferences.getInstance();
     host = prefs.getString('host') ?? '192.168.0.100';
     port = prefs.getInt('port') ?? 8888;
@@ -55,8 +56,8 @@ class TcpServiceController extends GetxController {
   /// 更新ip地址
   void updateIpAddress() async {
     List data = TextFieldController.to.editController.text.split(':');
-    TcpServiceController.to.host = data[0];
-    TcpServiceController.to.port = int.parse(data[1]);
+    host = data[0];
+    port = int.parse(data[1]);
     ipAddress.value = TextFieldController.to.editController.text;
 
     // 持久化保存
@@ -64,8 +65,8 @@ class TcpServiceController extends GetxController {
     await prefs.setInt('port', int.parse(data[1]));
   }
 
-  /// 显示IP地址编辑框
-  void showIPEditSheet({
+  /// 显示IP地址编辑框E
+  void showIpEditSheet({
     bool isSavedConnect = false, // 是否保存并连接
   }) {
     GetNotification.showCustomBottomSheet(
@@ -89,26 +90,6 @@ class TcpServiceController extends GetxController {
     );
   }
 
-  /// 显示锁屏密码设置框
-  void showLockPwsEditSheet() {
-    String res = prefs.getString('lockPwd') ?? '';
-    GetNotification.showCustomBottomSheet(
-      title: 'Set lock screen password',
-      confirmBorderColor: AppThemeStyle.clearGrey,
-      confirmOnTap: () async {
-        res = TextFieldController.to.editController.text;
-        Get.back();
-        await prefs.setString('lockPwd', res);
-      },
-      cancelOnTap: () => Get.back(),
-      children: [
-        const AppTextField(
-          hintText: 'Input your password',
-        ).marginSymmetric(vertical: 20),
-      ],
-    );
-  }
-
   /// 连接到pc服务端
   void connect() async {
     tcpClient?.close();
@@ -119,16 +100,13 @@ class TcpServiceController extends GetxController {
     try {
       tcpClient = await TcpClient.connect(host, port); // 连接到pc服务端
     } catch (e) {
-      // // 判断连接是否超时
-      if (e.toString().contains('Connection timed out')) {
-        GetNotification.showCustomSnackbar(
-          'TCP connection timeout',
-          'Check IP address and PC server',
-          tipsIcon: FontAwesomeIcons.server,
-          tipsIconColor: AppThemeStyle.red,
-        );
-      }
-      log('TCP连接超时:[$e]');
+      GetNotification.showCustomSnackbar(
+        'TCP connection timeout',
+        'Check IP address and PC server',
+        tipsIcon: FontAwesomeIcons.server,
+        tipsIconColor: AppThemeStyle.red,
+      );
+      log('TCP连接错误:[$e]');
       return;
     }
 
@@ -270,58 +248,4 @@ class TcpServiceController extends GetxController {
       heartbeatTimer?.cancel();
     }
   }
-}
-
-/// 向服务端发送的指令类别
-enum TcpCommands {
-  /// 鼠标操作
-  mouseAction,
-
-  /// 键盘操作
-  keyboardAction,
-
-  /// 语音操作
-  speechAction,
-
-  /// 其他
-  otherAction,
-
-  /// 心跳
-  heartbeatAction,
-}
-
-/// 键盘事件
-enum KeyboardAction {
-  /// 按压组合键
-  pressKeys,
-
-  /// 网站缩放
-  webpageZoom,
-}
-
-/// 语音事件
-enum SpeechAction {
-  /// 输入文字
-  inputText,
-}
-
-/// 其他事件
-enum OtherAction {
-  /// 检查是否是锁屏页面
-  checkLockScreen,
-
-  /// 锁屏
-  lockScreen,
-
-  /// 复制文本到手机端
-  copyText,
-
-  /// 打开指定路径的应用
-  openApplication,
-
-  /// 定时关机
-  timedShutdown,
-
-  /// 复制翻译的目标文本至电脑端剪贴板
-  copyTranslator
 }

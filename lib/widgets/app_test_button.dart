@@ -11,9 +11,15 @@ class AppTestButton extends StatelessWidget {
     return Visibility(
       visible: kDebugMode, // 在debug模式下显示此按钮
       child: FloatingActionButton(
-        onPressed: () async {
-          // GetNotification.showCustomSnackbar('title', 'message');
-        },
+        /// --------------------------
+        ///
+        /// --------------------------
+        ///
+        onPressed: () async {},
+
+        /// --------------------------
+        ///
+        /// --------------------------
         backgroundColor: AppThemeStyle.darkGrey.withOpacity(.8),
         elevation: 0,
         highlightElevation: 0,

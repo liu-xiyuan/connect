@@ -1,5 +1,12 @@
 # Connect Changelog
 
+## [2.3.0]
+
+- 修复 天气图标显示错误
+- 优化 语音识别图标
+- 优化 部分UI样式
+- 优化 页面跳转动画
+
 ## [2.2.0]
 
 - 新增 音量控制手势
@@ -33,8 +40,6 @@
 
 - 详情参考[翻译支持的语言](https://developer.huawei.com/consumer/en/doc/development/hiai-Guides/ml-resource-0000001050038188)
 - 在 **AppGallery Connect** > **项目设置** > **项目配额** > **语音语言类** 中查看当月的翻译配额剩余量
-
-
 
 **手势操作！：** 删除并修改了大部分主页手势操作，以下目前支持的手势操作：
 

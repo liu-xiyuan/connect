@@ -2,8 +2,9 @@ import 'dart:developer';
 
 import 'package:connect/common/get_notification.dart';
 import 'package:connect/controller/services/ml_speech_controller.dart';
-import 'package:connect/controller/services/permission_controller.dart';
+import 'package:connect/common/permission_checker.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
+import 'package:connect/model/tcp_call.dart';
 import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/real_time_translate_interface.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +89,7 @@ class MlTranslatorController extends GetxController {
     Map langCode = await checkLangCode(source);
     String? target;
 
-    MlSpeechController.to.setApiKey();
+    MlSpeechController.to.setHmsApiKey();
 
     final setting = MLTranslateSetting.remote(
       sourceText: source,
@@ -109,7 +110,7 @@ class MlTranslatorController extends GetxController {
   /// 因30分钟/月实时翻译额度限制，功能暂未开放
   void startRealTimeTranslate() async {
     liveCaptionList.value = ["Translator!".obs, "[功能暂未开放]".obs];
-    MlSpeechController.to.setApiKey();
+    MlSpeechController.to.setHmsApiKey();
 
     return;
 
@@ -161,7 +162,7 @@ class MlTranslatorController extends GetxController {
 
   /// 显示实时翻译页面
   void showRealTimeTranslate() async {
-    if (await PermissionController.to.checkSpeechPermissions()) {
+    if (await PermissionChecker.checkSpeechPermissions()) {
       Get.bottomSheet(
         const RealTimeTranslateInterface(),
         enableDrag: false,
@@ -227,7 +228,7 @@ class MlTranslatorController extends GetxController {
                 FontAwesomeIcons.language,
                 color: AppThemeStyle.white,
                 size: 15,
-              ).marginOnly(right: 10),
+              ).marginOnly(right: 5),
               Text(
                 "Translator",
                 style: Theme.of(Get.context!)

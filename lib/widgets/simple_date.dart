@@ -19,7 +19,7 @@ class SimpleDate extends GetView<HomeController> {
           () => Text(
             controller.nowTime.value,
             style: TextStyle(
-              fontSize: 120,
+              fontSize: 130,
               letterSpacing: 10,
               fontWeight: FontWeight.bold,
               color: AppThemeStyle.white,

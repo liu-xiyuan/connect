@@ -53,7 +53,7 @@ class LabItemCard extends StatelessWidget {
                 ],
             stops: colorsStops,
           ),
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: AppThemeStyle.standardBorderRadius,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

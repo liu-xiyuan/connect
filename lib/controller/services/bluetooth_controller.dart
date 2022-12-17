@@ -82,7 +82,7 @@ class BluetoothController extends GetxController {
   }) {
     GetNotification.showCustomBottomSheet(
       title: 'Set MAC address',
-      confirmTitle: isSavedConnect ? "save & connect" : "save",
+      confirmTitle: isSavedConnect ? "Save & Connect" : "Save",
       confirmBorderColor: AppThemeStyle.clearGrey,
       confirmOnTap: () {
         updateMacAddress();

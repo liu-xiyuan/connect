@@ -4,9 +4,12 @@ import 'package:connect/common/color_util.dart';
 import 'package:connect/common/get_notification.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/hide_camera_controller.dart';
-import 'package:connect/controller/services/permission_controller.dart';
+import 'package:connect/common/permission_checker.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
+import 'package:connect/controller/text_field_controller.dart';
+import 'package:connect/model/tcp_call.dart';
 import 'package:connect/style/app_theme_style.dart';
+import 'package:connect/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -16,9 +19,13 @@ import 'package:huawei_ml_body/huawei_ml_body.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+enum FaceVerificationResult { success, failure, noFace }
+
 /// 面部识别服务
 class MlFaceController extends GetxController {
   static MlFaceController get to => Get.find();
+
+  late SharedPreferences prefs;
 
   // 创建面部验证分析器。
   final analyzer = MLFaceVerificationAnalyzer();
@@ -33,9 +40,10 @@ class MlFaceController extends GetxController {
   bool isLockScreen = false;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     initFaceTemplate();
+    prefs = await SharedPreferences.getInstance();
   }
 
   /// 初始化面部模板
@@ -95,11 +103,10 @@ class MlFaceController extends GetxController {
 
   /// 解锁电脑
   void unlockComputer() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? pwd = prefs.getString('lockPwd');
+    String pwd = prefs.getString('lockPwd') ?? '';
 
     if (isLockScreen) {
-      if (pwd != null) {
+      if (pwd.isNotEmpty) {
         List pwdList = pwd.split('');
         if (BluetoothController.to.isConnected.value) {
           // 显示密码输入框
@@ -134,7 +141,7 @@ class MlFaceController extends GetxController {
   /// 显示人脸解锁界面
   Future<void> showFaceInterface() async {
     // 检查是否开启相关权限
-    if (await PermissionController.to.checkFacePermissions()) {
+    if (await PermissionChecker.checkFacePermissions()) {
       Get.closeCurrentSnackbar();
       Get.snackbar(
         '',
@@ -225,6 +232,24 @@ class MlFaceController extends GetxController {
       ),
     );
   }
-}
 
-enum FaceVerificationResult { success, failure, noFace }
+  /// 显示锁屏密码设置框
+  void showLockPwsEditSheet() {
+    String res = prefs.getString('lockPwd') ?? '';
+    GetNotification.showCustomBottomSheet(
+      title: 'Set lock screen password',
+      confirmBorderColor: AppThemeStyle.clearGrey,
+      confirmOnTap: () async {
+        res = TextFieldController.to.editController.text;
+        Get.back();
+        await prefs.setString('lockPwd', res);
+      },
+      cancelOnTap: () => Get.back(),
+      children: [
+        const AppTextField(
+          hintText: 'Input your password',
+        ).marginSymmetric(vertical: 20),
+      ],
+    );
+  }
+}

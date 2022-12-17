@@ -2,6 +2,7 @@ import 'package:connect/common/color_util.dart';
 import 'package:connect/controller/media_controller.dart';
 import 'package:connect/controller/services/bluetooth_controller.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
+import 'package:connect/model/tcp_call.dart';
 import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/feedback_button.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class MediaInterface extends GetView<MediaController> {
         child: Container(
           decoration: BoxDecoration(
             color: backgroundColor ?? AppThemeStyle.clearGrey,
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: AppThemeStyle.standardBorderRadius,
           ),
           child: Center(
             child: basicIcon(
@@ -74,7 +75,7 @@ class MediaInterface extends GetView<MediaController> {
         child: Container(
           decoration: BoxDecoration(
             color: backgroundColor ?? AppThemeStyle.clearGrey,
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: AppThemeStyle.standardBorderRadius,
           ),
           child: Padding(
             padding: direction == Axis.horizontal
@@ -312,7 +313,7 @@ class MediaInterface extends GetView<MediaController> {
           Positioned(
             bottom: 20,
             child: Text(
-              '*Only for NetEase CloudMusic',
+              '* Only for NetEase CloudMusic',
               style: Theme.of(context).textTheme.subtitle2?.copyWith(
                     color: AppThemeStyle.white.withOpacity(.6),
                     fontWeight: FontWeight.normal,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:connect/common/get_notification.dart';
 import 'package:connect/controller/services/tcp_service_controller.dart';
+import 'package:connect/model/tcp_call.dart';
 import 'package:connect/style/app_theme_style.dart';
 import 'package:connect/widgets/timer_picker.dart';
 import 'package:flutter/material.dart';
@@ -140,7 +141,7 @@ class ShutdownController extends GetxController {
       cancelShutdown();
     } else {
       GetNotification.showCustomBottomSheet(
-        title: 'Set Shutdown time',
+        title: 'Set Timer',
         confirmOnTap: () {
           Get.back();
           TcpServiceController.to.sendData(
