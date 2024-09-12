@@ -38,7 +38,7 @@ class ToolPage extends GetView<ToolController> {
             // 电脑锁屏
             ToolItem(
               onTap: () {
-                Get.offNamed('/');
+                Get.offAllNamed('/');
                 TcpServiceController.to.sendData(
                   TcpCommands.otherAction,
                   OtherAction.lockScreen,
@@ -52,7 +52,7 @@ class ToolPage extends GetView<ToolController> {
             // 语音
             ToolItem(
               onTap: () {
-                Get.offNamed('/');
+                Get.offAllNamed('/');
                 MlSpeechController.to.showSpeechInterface();
               },
               title: 'Speech',
@@ -62,10 +62,7 @@ class ToolPage extends GetView<ToolController> {
 
             // 面部解锁
             ToolItem(
-              onTap: () {
-                Get.back();
-                MlFaceController.to.showFaceInterface();
-              },
+              onTap: () => MlFaceController.to.showFaceInterface(),
               title: 'Face Unlock',
               icon: FontAwesomeIcons.solidFaceGrinTongueSquint,
               iconColor: ColorUtil.hex("#39ceab"),
@@ -89,9 +86,7 @@ class ToolPage extends GetView<ToolController> {
 
             // 媒体控制器
             ToolItem(
-              onTap: () {
-                BluetoothController.to.showMediaInterface();
-              },
+              onTap: () => BluetoothController.to.showMediaInterface(),
               title: 'Media Control',
               icon: FontAwesomeIcons.icons,
               iconColor: ColorUtil.hex('#f65e6b'),
@@ -114,7 +109,7 @@ class ToolPage extends GetView<ToolController> {
             ),
           ],
         ),
-      ),
+      ).marginOnly(top: 10),
     );
   }
 }

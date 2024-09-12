@@ -50,10 +50,7 @@ class MediaInterface extends GetView<MediaController> {
             borderRadius: AppThemeStyle.standardBorderRadius,
           ),
           child: Center(
-            child: basicIcon(
-              icon,
-              iconColor: iconColor,
-            ),
+            child: basicIcon(icon, iconColor: iconColor),
           ),
         ),
       );
@@ -64,6 +61,7 @@ class MediaInterface extends GetView<MediaController> {
       Function() onTap, {
       Function(TapDownDetails e)? onTapDown,
       Function(TapUpDetails)? onTapUp,
+      Function()? onTapCancel,
       Axis direction = Axis.horizontal,
       Color? backgroundColor,
       List<Widget> children = const [],
@@ -72,6 +70,7 @@ class MediaInterface extends GetView<MediaController> {
         onTap: onTap,
         onTapUp: onTapUp,
         onTapDown: onTapDown,
+        onTapCancel: onTapCancel,
         child: Container(
           decoration: BoxDecoration(
             color: backgroundColor ?? AppThemeStyle.clearGrey,
@@ -174,7 +173,7 @@ class MediaInterface extends GetView<MediaController> {
                         () => null,
                         direction: Axis.vertical,
                         backgroundColor: Colors.white,
-                        onTapUp: (e) {
+                        onTapDown: (e) {
                           double widgetHeight = context.height * .7;
                           double position = e.localPosition.dy;
                           if (position <= widgetHeight / 3) {
@@ -192,10 +191,13 @@ class MediaInterface extends GetView<MediaController> {
                               MediaControl.volumeDown,
                             );
                           }
-                          BluetoothController.to.mediaControl(
-                            MediaControl.release,
-                          );
                         },
+                        onTapUp: (e) => BluetoothController.to.mediaControl(
+                          MediaControl.release,
+                        ),
+                        onTapCancel: () => BluetoothController.to.mediaControl(
+                          MediaControl.release,
+                        ),
                         children: [
                           basicIcon(FontAwesomeIcons.plus),
                           strip(),
@@ -262,12 +264,11 @@ class MediaInterface extends GetView<MediaController> {
                       crossAxisCellCount: 1,
                       mainAxisCellCount: 1,
                       child: basicButton(
-                        () {
-                          TcpServiceController.to.sendData(
-                              TcpCommands.keyboardAction,
-                              KeyboardAction.pressKeys,
-                              data: 'ctrl, alt, L');
-                        },
+                        () => TcpServiceController.to.sendData(
+                          TcpCommands.keyboardAction,
+                          KeyboardAction.pressKeys,
+                          data: 'ctrl, alt, L',
+                        ),
                         FontAwesomeIcons.solidHeart,
                         backgroundColor: ColorUtil.hex('#e05163'),
                         iconColor: ColorUtil.hex('#ffdfad'),

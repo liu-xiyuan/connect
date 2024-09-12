@@ -238,7 +238,7 @@ class MlFaceController extends GetxController {
     String res = prefs.getString('lockPwd') ?? '';
     GetNotification.showCustomBottomSheet(
       title: 'Set lock screen password',
-      confirmBorderColor: AppThemeStyle.clearGrey,
+      confirmBorderColor: AppThemeStyle.white.withOpacity(.2),
       confirmOnTap: () async {
         res = TextFieldController.to.editController.text;
         Get.back();
@@ -248,7 +248,7 @@ class MlFaceController extends GetxController {
       children: [
         const AppTextField(
           hintText: 'Input your password',
-        ).marginSymmetric(vertical: 20),
+        ),
       ],
     );
   }

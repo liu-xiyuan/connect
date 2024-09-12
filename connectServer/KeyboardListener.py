@@ -21,7 +21,7 @@ class KeyboardListener:
                or ('left ctrl' in self.key_state_map and self.key_state_map['left ctrl'] == 'down') \
                or ('right ctrl' in self.key_state_map and self.key_state_map['right ctrl'] == 'down')
 
-    # 判断是否按下 CTRL + C C 组合键
+    # 判断是否按下 CTRL + C + C 组合键
     def on_ctrl_cc_event(self, key):
         self.key_state_map[key.name.lower()] = key.event_type
 

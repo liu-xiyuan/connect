@@ -86,7 +86,7 @@ class MediaController extends GetxController {
         AppTextField(
           initText: launchPath.value,
           hintText: 'Input: D:\\xx\\xx.exe',
-        ).marginSymmetric(vertical: 20),
+        ),
       ],
     );
   }

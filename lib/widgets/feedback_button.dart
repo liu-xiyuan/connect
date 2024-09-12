@@ -13,6 +13,7 @@ class FeedbackButton extends StatelessWidget {
     this.onTapDown,
     this.onTapUp,
     this.onLongPress,
+    this.onTapCancel,
   }) : super(key: key);
 
   final Widget child;
@@ -21,6 +22,7 @@ class FeedbackButton extends StatelessWidget {
   final bool enableVibrate;
   final Function(TapDownDetails)? onTapDown;
   final Function(TapUpDetails)? onTapUp;
+  final Function()? onTapCancel;
   final Function()? onLongPress;
 
   @override
@@ -41,7 +43,10 @@ class FeedbackButton extends StatelessWidget {
             if (onTapUp != null) onTapUp!(_);
           },
           onTapDown: onTapDown,
-          onTapCancel: () => scale.value = 1,
+          onTapCancel: () {
+            scale.value = 1;
+            if (onTapCancel != null) onTapCancel!();
+          },
           onPanDown: (_) => scale.value = 0.9,
           onPanEnd: (_) => scale.value = 1,
           onPanCancel: () => scale.value = 1,

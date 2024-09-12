@@ -150,7 +150,7 @@ class ShutdownController extends GetxController {
             data: '${hour.value},${minute.value}',
           );
         },
-        confirmBorderColor: AppThemeStyle.clearGrey,
+        confirmBorderColor: AppThemeStyle.white.withOpacity(.2),
         enableDrag: false,
         children: [
           TimerPicker(

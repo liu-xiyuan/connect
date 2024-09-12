@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:connect/common/get_notification.dart';
 import 'package:connect/common/permission_checker.dart';
 import 'package:connect/model/weather_info.dart';
@@ -160,14 +159,16 @@ class MlAwarenessController extends GetxController {
       int nowHours = DateTime.now().hour;
       int weatherId = res?.hourlyWeather?[nowHours].weatherId ?? 0;
 
-      temperatureC.value = res?.hourlyWeather?[nowHours].tempC ?? 0;
+      // temperatureC.value = res?.hourlyWeather?[nowHours].tempC ?? 0; // 体感温度
+      temperatureC.value =
+          res?.weatherSituation?.situation?.realFeelC ?? 0; // 大气温度
 
       weatherIcon.value = WeatherInfo.getWeatherIcon(
         weatherId,
         isDayNight.value,
       );
 
-      log('天气标识: $weatherId | 体感温度: $temperatureC');
+      log('天气标识: $weatherId | 大气温度: $temperatureC');
 
       if (weatherTimer?.isActive ?? false) return;
 

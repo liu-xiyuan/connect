@@ -15,8 +15,8 @@ class AppThemeStyle {
   static Color clearGrey = ColorUtil.hex('#EBEBF5').withOpacity(.5);
   static Color blurGrey = darkGrey.withOpacity(.6);
 
-  static BorderRadiusGeometry largeBorderRadius = BorderRadius.circular(40);
-  static BorderRadiusGeometry standardBorderRadius = BorderRadius.circular(25);
+  static BorderRadius largeBorderRadius = BorderRadius.circular(40);
+  static BorderRadius standardBorderRadius = BorderRadius.circular(25);
 
   /// 主题
   static ThemeData appTheme = ThemeData(

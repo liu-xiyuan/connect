@@ -44,12 +44,14 @@ class LabItemCard extends StatelessWidget {
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.bottomRight,
-            end: Alignment.topLeft,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: cardColors ??
                 [
-                  ColorUtil.hex('#434343'),
-                  Colors.black,
+                  // ColorUtil.hex('#434343'),
+                  // Colors.black,
+                  ColorUtil.hex('#212529'),
+                  AppThemeStyle.blurGrey,
                 ],
             stops: colorsStops,
           ),

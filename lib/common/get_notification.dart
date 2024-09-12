@@ -140,9 +140,6 @@ class GetNotification {
     /// 自定义组件
     List<Widget> children = const <Widget>[],
 
-    /// 点击背景是否可以关闭
-    bool? isDismissble,
-
     /// 是否可以滑动关闭
     bool? enableDrag,
   }) {
@@ -163,8 +160,8 @@ class GetNotification {
       ignoreSafeArea: true,
       isScrollControlled: true, // 是否支持全屏弹出
       barrierColor: Colors.black12,
-      isDismissible: isDismissble ?? false, // 点击背景是否可以关闭
-      enableDrag: enableDrag ?? true, // 是否可以滑动关闭
+      isDismissible: false, // 点击背景是否可以关闭
+      enableDrag: enableDrag ?? false, // 是否可以滑动关闭
     );
   }
 }

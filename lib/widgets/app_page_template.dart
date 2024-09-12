@@ -58,7 +58,7 @@ class AppPageTemplate extends StatelessWidget {
                         color: AppThemeStyle.clearGrey,
                         fontWeight: FontWeight.normal,
                       ),
-                ).marginOnly(bottom: 20),
+                ).marginOnly(bottom: 10),
 
           Expanded(child: child.marginOnly(top: 10)),
 

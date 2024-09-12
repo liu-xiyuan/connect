@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -67,7 +69,7 @@ class WeatherInfo {
 
     weatherMap.forEach((key, value) {
       if (value['id'].contains(weatherId)) {
-        if (key == 'sun' && !isDayNight) {
+        if (key == 'sun' && isDayNight) {
           res = weatherMap['moon']!['icon']; // 判断是否为晚上
         } else {
           res = value['icon'];

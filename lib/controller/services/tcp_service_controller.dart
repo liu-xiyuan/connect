@@ -72,7 +72,7 @@ class TcpServiceController extends GetxController {
     GetNotification.showCustomBottomSheet(
       title: 'Set IP address',
       confirmTitle: isSavedConnect ? "Save & Connect" : "Save",
-      confirmBorderColor: AppThemeStyle.clearGrey,
+      confirmBorderColor: AppThemeStyle.white.withOpacity(.2),
       confirmOnTap: () {
         updateIpAddress();
         Get.back();
@@ -85,7 +85,7 @@ class TcpServiceController extends GetxController {
         AppTextField(
           initText: ipAddress.value,
           hintText: 'Input: 192.127.0.106:8888',
-        ).marginSymmetric(vertical: 20),
+        ),
       ],
     );
   }

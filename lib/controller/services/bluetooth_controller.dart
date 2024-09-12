@@ -83,7 +83,7 @@ class BluetoothController extends GetxController {
     GetNotification.showCustomBottomSheet(
       title: 'Set MAC address',
       confirmTitle: isSavedConnect ? "Save & Connect" : "Save",
-      confirmBorderColor: AppThemeStyle.clearGrey,
+      confirmBorderColor: AppThemeStyle.white.withOpacity(.2),
       confirmOnTap: () {
         updateMacAddress();
         Get.back();
@@ -96,7 +96,7 @@ class BluetoothController extends GetxController {
         AppTextField(
           initText: macAddress.value,
           hintText: 'Input: 35:7G:F4:77:C2:9F',
-        ).marginSymmetric(vertical: 20),
+        ),
       ],
     );
   }
@@ -161,14 +161,16 @@ class BluetoothController extends GetxController {
 
   /// 显示媒体控制页面
   void showMediaInterface() {
-    Get.bottomSheet(
-      const MediaInterface(),
-      enableDrag: false,
-      barrierColor: Colors.transparent,
-      isScrollControlled: true,
-      enterBottomSheetDuration: const Duration(milliseconds: 150),
-      exitBottomSheetDuration: const Duration(milliseconds: 150),
-    );
+    if (checkBluetooth()) {
+      Get.bottomSheet(
+        const MediaInterface(),
+        enableDrag: false,
+        barrierColor: Colors.transparent,
+        isScrollControlled: true,
+        enterBottomSheetDuration: const Duration(milliseconds: 0),
+        exitBottomSheetDuration: const Duration(milliseconds: 0),
+      );
+    }
   }
 
   void blueStatusCall(MethodCall call) {

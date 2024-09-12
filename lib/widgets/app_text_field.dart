@@ -27,13 +27,12 @@ class AppTextField extends GetView<TextFieldController> {
     controller.editController.text = initText ?? '';
 
     return Container(
-      height: 45,
-      margin: const EdgeInsets.only(left: 15, right: 15),
+      height: 40,
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            width: 6,
-            color: AppThemeStyle.clearGrey.withOpacity(.3),
+            width: 4,
+            color: AppThemeStyle.white.withOpacity(.2),
           ),
         ),
       ),
@@ -41,8 +40,9 @@ class AppTextField extends GetView<TextFieldController> {
         autofocus: autofocus ?? false,
         textAlignVertical: TextAlignVertical.center, // 垂直居中对齐
         controller: controller.editController,
-        cursorColor: AppThemeStyle.white.withOpacity(.3), // 光标颜色
+        cursorColor: AppThemeStyle.blue, // 光标颜色
         cursorWidth: 2,
+        cursorHeight: 18,
         style: Theme.of(context).textTheme.subtitle1!.copyWith(
               textBaseline: TextBaseline.alphabetic,
               fontWeight: FontWeight.normal,
@@ -57,6 +57,7 @@ class AppTextField extends GetView<TextFieldController> {
                 color: AppThemeStyle.clearGrey,
                 textBaseline: TextBaseline.alphabetic,
                 fontWeight: FontWeight.normal,
+                height: 1,
               ),
           contentPadding: const EdgeInsets.only(left: 10),
           border: InputBorder.none,
@@ -66,6 +67,6 @@ class AppTextField extends GetView<TextFieldController> {
           ),
         ),
       ),
-    );
+    ).marginSymmetric(vertical: 20);
   }
 }
